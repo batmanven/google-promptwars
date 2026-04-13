@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const apiKey = process.env.NEXT_PUBLIC_VERTEXT_AI_API_KEY || "";
+const apiKey = process.env.NEXT_PUBLIC_VERTEX_AI_API_KEY || "";
 const genAI = new GoogleGenerativeAI(apiKey);
 
 export const geminiModel = genAI.getGenerativeModel({
