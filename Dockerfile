@@ -16,24 +16,34 @@ RUN \
   else echo "Lockfile not found." && exit 1; \
   fi
 
-
-# Rebuild the source code only when needed
-FROM base AS builder
+# Build the application
+FROM base AS build
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Next.js collects completely anonymous telemetry data about general usage.
-# Learn more here: https://nextjs.org/telemetry
-# Uncomment the following line in case you want to disable telemetry during the build.
-ENV NEXT_TELEMETRY_DISABLED 1
+# Build the Next.js application
+RUN npm run build
 
-RUN \
-  if [ -f yarn.lock ]; then yarn run build; \
-  elif [ -f package-lock.json ]; then npm run build; \
-  elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm run build; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+# Production stage
+FROM base AS production
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+# Install dependencies
+COPY package.json package-lock.json* ./
+RUN npm ci --only=production
+
+# Copy built application
+COPY --from=build /app/.next ./.next
+COPY --from=build /app/public ./public
+
+# Expose port
+EXPOSE 3000
+
+# Start the application
+CMD ["npm", "start"]
 
 # Production image, copy all the files and run next
 FROM base AS runner
