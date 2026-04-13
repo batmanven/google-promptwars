@@ -8,6 +8,7 @@ declare global {
   }
 }
 import { MapPin, Users, Wifi, Activity } from "lucide-react";
+import { mockRadarData } from "@/lib/mock-data";
 
 export function Radar() {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -136,10 +137,14 @@ export function Radar() {
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-[#87867f]">Current</span>
-                <span className="text-sm font-medium text-[#c96442]">12 people</span>
+                <span className="text-sm font-medium text-[#c96442]">{mockRadarData.crowdDensity.current} people</span>
               </div>
               <div className="w-full bg-[#e8e6dc] rounded-full h-2">
-                <div className="bg-[#c96442] h-2 rounded-full" style={{width: '40%'}}></div>
+                <div className="bg-[#c96442] h-2 rounded-full" style={{width: `${(mockRadarData.crowdDensity.current / mockRadarData.crowdDensity.max) * 100}%`}}></div>
+              </div>
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-[#87867f]">Status: {mockRadarData.crowdDensity.status}</span>
+                <span className="text-[#c96442]">{mockRadarData.crowdDensity.trend}</span>
               </div>
             </div>
           </div>
@@ -157,10 +162,14 @@ export function Radar() {
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-[#87867f]">Signal</span>
-                <span className="text-sm font-medium text-[#c96442]">Excellent</span>
+                <span className="text-sm font-medium text-[#c96442]">{mockRadarData.networkQuality.signal}</span>
               </div>
               <div className="w-full bg-[#e8e6dc] rounded-full h-2">
-                <div className="bg-[#c96442] h-2 rounded-full" style={{width: '85%'}}></div>
+                <div className="bg-[#c96442] h-2 rounded-full" style={{width: '95%'}}></div>
+              </div>
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-[#87867f]">Speed: {mockRadarData.networkQuality.speed}</span>
+                <span className="text-[#c96442]">Latency: {mockRadarData.networkQuality.latency}</span>
               </div>
             </div>
           </div>
@@ -178,10 +187,14 @@ export function Radar() {
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-[#87867f]">Score</span>
-                <span className="text-sm font-medium text-[#c96442]">High</span>
+                <span className="text-sm font-medium text-[#c96442]">{mockRadarData.activityLevel.score}%</span>
               </div>
               <div className="w-full bg-[#e8e6dc] rounded-full h-2">
-                <div className="bg-[#c96442] h-2 rounded-full" style={{width: '75%'}}></div>
+                <div className="bg-[#c96442] h-2 rounded-full" style={{width: `${mockRadarData.activityLevel.score}%`}}></div>
+              </div>
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-[#87867f]">Status: {mockRadarData.activityLevel.status}</span>
+                <span className="text-[#c96442]">{mockRadarData.activityLevel.engagement}</span>
               </div>
             </div>
           </div>
