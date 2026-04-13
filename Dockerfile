@@ -39,6 +39,25 @@ RUN npm ci --only=production
 COPY --from=build /app/.next ./.next
 COPY --from=build /app/public ./public
 
+# Create non-root user
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Set permissions
+RUN chown -R nextjs:nodejs /app
+USER nextjs
+
+# Expose port
+EXPOSE 3000
+
+# Start the application
+CMD ["npm", "start"]
+RUN npm ci --only=production
+
+# Copy built application
+COPY --from=build /app/.next ./.next
+COPY --from=build /app/public ./public
+
 # Expose port
 EXPOSE 3000
 
