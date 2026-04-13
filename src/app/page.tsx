@@ -6,9 +6,7 @@ export default function Home() {
     <main className="min-h-screen bg-[#f5f4ed] text-[#30302e]">
       <div className="container mx-auto px-4 py-8 lg:py-16 max-w-6xl">
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-          {/* Main Content */}
           <div className="xl:col-span-2 space-y-8">
-            {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
                 <h1 className="text-4xl lg:text-6xl font-bold mb-2 text-[#30302e]">
@@ -24,14 +22,10 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Goal Setter */}
             <GoalSetter />
-
-            {/* Timeline */}
             <Timeline />
           </div>
 
-          {/* Sidebar Content */}
           <div className="xl:col-span-1">
             <div className="bg-[#f0eee6] backdrop-blur-xl border border-[#d4d0c4] rounded-2xl p-6 space-y-6">
               <div>

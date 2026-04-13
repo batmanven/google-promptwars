@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { getAetherResponse } from "@/lib/gemini";
 import { Send, Sparkles, Target } from "lucide-react";
+import { getAetherResponse } from "@/lib/gemini";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 export function GoalSetter() {
   const [goal, setGoal] = useState("");
@@ -43,7 +45,7 @@ export function GoalSetter() {
           <button
             type="submit"
             disabled={loading}
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-3 bg-[#c96442] text-white rounded-lg hover:shadow-lg hover:shadow-[#c96442]/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="absolute cursor-pointer right-2 top-1/2 -translate-y-1/2 p-3 bg-[#c96442] text-white rounded-lg hover:shadow-lg hover:shadow-[#c96442]/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Send size={18} />
           </button>
@@ -51,12 +53,18 @@ export function GoalSetter() {
       </form>
 
       {response && (
-        <div className="bg-[#f5f4ed] border border-[#d4d0c4] rounded-xl p-6 space-y-3">
+        <div className="bg-[#f5f4ed] border border-[#d4d0c4] rounded-xl p-6 space-y-4">
           <div className="flex items-center gap-3">
             <Sparkles className="w-5 h-5 text-[#c96442]" />
             <span className="text-sm font-bold text-[#c96442] uppercase tracking-wider">AI Response</span>
           </div>
-          <p className="text-[#87867f] leading-relaxed">{response}</p>
+          <div className="prose prose-sm max-w-none text-[#87867f] leading-relaxed [&_h2]:text-[#30302e] [&_h2]:text-lg [&_h2]:font-bold [&_h2]:mb-3 [&_h2]:mt-4 [&_ul]:text-[#87867f] [&_ol]:text-[#87867f] [&_li]:text-[#87867f] [&_li]:mb-1 [&_strong]:text-[#c96442] [&_em]:text-[#c96442]">
+            <ReactMarkdown 
+              remarkPlugins={[remarkGfm]}
+            >
+              {response}
+            </ReactMarkdown>
+          </div>
         </div>
       )}
     </div>
