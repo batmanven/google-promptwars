@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  output: 'standalone',
+  experimental: {
+    serverComponentsExternalPackages: ['@google/generative-ai', '@googlemaps/js-api-loader']
+  }
 };
 
 export default nextConfig;

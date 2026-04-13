@@ -22,26 +22,34 @@ export function Sidebar() {
     <>
       <button
         onClick={toggleSidebar}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-[#f0eee6] backdrop-blur-md border border-[#d4d0c4] rounded-lg text-[#30302e] hover:bg-[#e8e6dc] transition-colors"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-[#f0eee6] border border-[#d4d0c4] rounded-lg text-[#30302e] hover:bg-[#e8e6dc] transition-colors"
       >
         {isOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
       <aside className={`
-        fixed left-0 top-0 h-full w-full lg:w-80 backdrop-blur-xl border-r border-[#d4d0c4] z-40 transition-transform duration-300 ease-in-out
+        fixed left-0 top-0 h-full w-full lg:w-80  border-r border-[#d4d0c4] z-40 transition-transform duration-300 ease-in-out
         lg:translate-x-0 lg:static lg:block
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="flex flex-col h-full">
           <div className="p-6 border-b border-[#d4d0c4]">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#c96442] rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">A</span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-[#c96442] rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">A</span>
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold text-[#30302e]">Aether</h1>
+                  <p className="text-xs text-[#87867f]">Intelligent Assistant</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-xl font-bold text-[#30302e]">Aether</h1>
-                <p className="text-xs text-[#87867f]">Intelligent Assistant</p>
-              </div>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="lg:hidden p-2 bg-[#f0eee6] border border-[#d4d0c4] rounded-lg text-[#30302e] hover:bg-[#e8e6dc] transition-colors"
+              >
+                <X size={20} />
+              </button>
             </div>
           </div>
 
@@ -76,13 +84,13 @@ export function Sidebar() {
             ))}
           </nav>
 
-         
+      
         </div>
       </aside>
 
       {isOpen && (
         <div 
-          className="lg:hidden fixed inset-0 bg-[#30302e]/30 z-30"
+          className="lg:hidden fixed inset-0 bg-black/50 z-30"
           onClick={() => setIsOpen(false)}
         />
       )}
