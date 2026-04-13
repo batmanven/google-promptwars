@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { Sidebar } from "@/components/layout/Sidebar";
 
-const ibm = IBM_Plex_Sans({
+const inter = Inter({
   weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
 });
@@ -20,10 +20,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${ibm.className} bg-black text-white`}>
+      <body className={`${inter.className} bg-[#f5f4ed] text-[#30302e]`}>
         <div className="flex min-h-screen">
           <Sidebar />
-          <main className="flex-1 lg:ml-0">
+          <main className="flex-1">
             {children}
           </main>
         </div>

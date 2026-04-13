@@ -35,7 +35,7 @@ export function VisionConcierge() {
 
   return (
     <div className="w-full">
-      <div className="bg-gray-900/50 backdrop-blur-xl border border-gray-800 rounded-3xl p-12 text-center space-y-8 min-h-[400px] flex flex-col items-center justify-center">
+      <div className="bg-[#f0eee6] backdrop-blur-xl border border-[#d4d0c4] rounded-3xl p-12 text-center space-y-8 min-h-[400px] flex flex-col items-center justify-center">
         {image ? (
           <div className="w-full space-y-6 max-w-lg">
             <div className="relative group">
@@ -46,22 +46,22 @@ export function VisionConcierge() {
                 height={400}
                 className="w-full h-64 object-cover rounded-2xl shadow-2xl"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#30302e]/50 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
             
-            <div className="bg-gradient-to-r from-purple-900/20 to-cyan-900/20 border border-purple-500/20 rounded-2xl p-6 text-left">
-              <div className="flex items-center gap-3 mb-4 text-cyan-400">
+            <div className="bg-[#f5f4ed] border border-[#d4d0c4] rounded-2xl p-6 text-left">
+              <div className="flex items-center gap-3 mb-4 text-[#c96442]">
                 <Sparkles className="w-5 h-5" />
                 <span className="text-xs font-bold uppercase tracking-wider">AI Analysis</span>
               </div>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="text-[#87867f] leading-relaxed">
                 {loading ? "Analyzing visual context..." : response}
               </p>
             </div>
             
             <button 
               onClick={reset} 
-              className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mx-auto"
+              className="flex items-center gap-2 text-sm text-[#87867f] hover:text-[#30302e] transition-colors mx-auto"
             >
               <RefreshCw className="w-4 h-4" />
               Try Another Image
@@ -69,18 +69,18 @@ export function VisionConcierge() {
           </div>
         ) : (
           <div className="space-y-8 max-w-md">
-            <div className="w-20 h-20 mx-auto bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg shadow-cyan-500/25">
+            <div className="w-20 h-20 mx-auto bg-[#c96442] rounded-full flex items-center justify-center shadow-lg shadow-[#c96442]/25">
               <Camera className="w-10 h-10 text-white" />
             </div>
             
             <div className="space-y-4">
-              <h2 className="text-3xl font-bold text-white">Vision Concierge</h2>
-              <p className="text-gray-400 leading-relaxed">
+              <h2 className="text-3xl font-bold text-[#30302e]">Vision Concierge</h2>
+              <p className="text-[#87867f] leading-relaxed">
                 Upload a photo of a banner, venue map, or room to get instant AI-powered insights and analysis.
               </p>
             </div>
             
-            <label className="group cursor-pointer inline-flex items-center gap-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-8 py-4 rounded-2xl font-semibold transition-all hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25">
+            <label className="group cursor-pointer inline-flex items-center gap-3 bg-[#c96442] text-white px-8 py-4 rounded-2xl font-semibold transition-all hover:scale-105 hover:shadow-lg hover:shadow-[#c96442]/25">
               <Upload className="w-5 h-5" />
               Capture Pulse
               <input type="file" accept="image/*" className="hidden" onChange={handleUpload} />
