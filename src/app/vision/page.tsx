@@ -2,12 +2,16 @@ import { VisionConcierge } from "@/components/dashboard/VisionConcierge";
 
 export default function VisionPage() {
   return (
-    <main className="bg-grid min-h-screen pb-32">
-      <div className="max-w-md mx-auto px-6 pt-12 space-y-8">
-        <header>
-          <h1 className="gradient-text text-4xl mb-1">Vision</h1>
-          <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400">Multimodal Intelligence</p>
-        </header>
+    <main className="min-h-screen bg-black text-white">
+      <div className="container mx-auto px-4 py-16 max-w-2xl">
+        <div className="text-center mb-16">
+          <h1 className="text-6xl font-bold mb-3 bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent">
+            Vision
+          </h1>
+          <p className="text-sm font-medium tracking-widest text-gray-400 uppercase">
+            Multimodal Intelligence
+          </p>
+        </div>
 
         <VisionConcierge />
       </div>

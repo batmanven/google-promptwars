@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { analyzeVision } from "@/lib/gemini";
-import { Camera, RefreshCw, Sparkles } from "lucide-react";
+import { Camera, RefreshCw, Sparkles, Upload } from "lucide-react";
+import Image from "next/image";
 
 export function VisionConcierge() {
   const [image, setImage] = useState<string | null>(null);
@@ -18,7 +19,7 @@ export function VisionConcierge() {
       const base64 = reader.result as string;
       setImage(base64);
       setLoading(true);
-      
+
       const buffer = await file.arrayBuffer();
       const result = await analyzeVision(buffer, file.type);
       setResponse(result);
@@ -33,37 +34,58 @@ export function VisionConcierge() {
   };
 
   return (
-    <div className="w-full space-y-6">
-      <div className="glass-card p-8 flex flex-col items-center justify-center text-center space-y-4 min-h-[300px] relative overflow-hidden">
+    <div className="w-full">
+      <div className="bg-gray-900/50 backdrop-blur-xl border border-gray-800 rounded-3xl p-12 text-center space-y-8 min-h-[400px] flex flex-col items-center justify-center">
         {image ? (
-          <div className="w-full space-y-4">
-            <img src={image} alt="Upload" className="w-full h-48 object-cover rounded-xl border border-white/10" />
-            <div className="p-4 bg-[#7000ff]/10 border border-[#7000ff]/20 rounded-xl text-left animate-in fade-in slide-in-from-bottom-2">
-              <div className="flex items-center gap-2 mb-2 text-[#00f2ff]">
-                <Sparkles size={16} />
-                <span className="text-[10px] font-bold uppercase tracking-wider">Aether Insights</span>
-              </div>
-              <p className="text-sm leading-relaxed">{loading ? "Processing visual context..." : response}</p>
+          <div className="w-full space-y-6 max-w-lg">
+            <div className="relative group">
+              <Image
+                src={image}
+                alt="Uploaded"
+                width={600}
+                height={400}
+                className="w-full h-64 object-cover rounded-2xl shadow-2xl"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
-            <button onClick={reset} className="flex items-center gap-2 text-xs text-gray-500 hover:text-white mx-auto transition-colors">
-              <RefreshCw size={14} />
-              Try Another
+            
+            <div className="bg-gradient-to-r from-purple-900/20 to-cyan-900/20 border border-purple-500/20 rounded-2xl p-6 text-left">
+              <div className="flex items-center gap-3 mb-4 text-cyan-400">
+                <Sparkles className="w-5 h-5" />
+                <span className="text-xs font-bold uppercase tracking-wider">AI Analysis</span>
+              </div>
+              <p className="text-gray-300 leading-relaxed">
+                {loading ? "Analyzing visual context..." : response}
+              </p>
+            </div>
+            
+            <button 
+              onClick={reset} 
+              className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mx-auto"
+            >
+              <RefreshCw className="w-4 h-4" />
+              Try Another Image
             </button>
           </div>
         ) : (
-          <>
-            <div className="bg-[#00f2ff]/10 p-6 rounded-full text-[#00f2ff] pulse">
-              <Camera size={40} />
+          <div className="space-y-8 max-w-md">
+            <div className="w-20 h-20 mx-auto bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg shadow-cyan-500/25">
+              <Camera className="w-10 h-10 text-white" />
             </div>
-            <div>
-              <h2 className="text-xl font-bold mb-2">Vision Concierge</h2>
-              <p className="text-sm text-gray-400 max-w-xs">Upload a photo of a banner, venue map, or room to get instant AI context.</p>
+            
+            <div className="space-y-4">
+              <h2 className="text-3xl font-bold text-white">Vision Concierge</h2>
+              <p className="text-gray-400 leading-relaxed">
+                Upload a photo of a banner, venue map, or room to get instant AI-powered insights and analysis.
+              </p>
             </div>
-            <label className="cursor-pointer bg-[#00f2ff] text-black px-6 py-3 rounded-xl font-bold transition-transform hover:scale-105 active:scale-95">
+            
+            <label className="group cursor-pointer inline-flex items-center gap-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-8 py-4 rounded-2xl font-semibold transition-all hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25">
+              <Upload className="w-5 h-5" />
               Capture Pulse
               <input type="file" accept="image/*" className="hidden" onChange={handleUpload} />
             </label>
-          </>
+          </div>
         )}
       </div>
     </div>
