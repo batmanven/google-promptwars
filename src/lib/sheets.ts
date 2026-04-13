@@ -9,11 +9,23 @@ export interface EventSession {
 
 export const getEventData = async (): Promise<EventSession[]> => {
   const sheetId = process.env.NEXT_PUBLIC_EVENT_DATA_SHEET_ID;
-  if (!sheetId) return getFallbackData();
+
+  if (!sheetId) {
+    console.warn("NEXT_PUBLIC_EVENT_DATA_SHEET_ID is not defined. Using fallback data.");
+    return getFallbackData();
+  }
 
   try {
-    const url = `https: 
-    const response = await fetch(url);
+    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
+
+    const response = await fetch(url, {
+      next: { revalidate: 3600 }
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
     const text = await response.text();
     return parseCSV(text);
   } catch (error) {
@@ -23,15 +35,27 @@ export const getEventData = async (): Promise<EventSession[]> => {
 };
 
 const parseCSV = (csv: string): EventSession[] => {
-  const lines = csv.split("\n").slice(1);
-  return lines.map((line, index) => {
-    const [title, speaker, time, room, description] = line.split(",").map(s => s.replace(/\"/g, ""));
+  if (!csv) return [];
+
+  const lines = csv.split(/\r?\n/);
+
+  const dataLines = lines.slice(1).filter(line => line.trim() !== "");
+
+  return dataLines.map((line, index) => {
+    const matches = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+
+    const cleanFields = (matches || []).map(field =>
+      field.replace(/^"|"$/g, "").trim()
+    );
+
+    const [title, speaker, time, room, description] = cleanFields;
+
     return {
       id: index.toString(),
-      title: title || "TBA",
-      speaker: speaker || "Guest",
-      time: time || "00:00",
-      room: room || "Main Hall",
+      title: title || "Untitled Session",
+      speaker: speaker || "TBA",
+      time: time || "TBA",
+      room: room || "TBA",
       description: description || ""
     };
   });
@@ -39,7 +63,7 @@ const parseCSV = (csv: string): EventSession[] => {
 
 const getFallbackData = (): EventSession[] => [
   {
-    id: "1",
+    id: "fb-1",
     title: "The Future of AI with Gemini",
     speaker: "Google Developer Team",
     time: "10:00 AM",
@@ -47,7 +71,7 @@ const getFallbackData = (): EventSession[] => [
     description: "Deep dive into multimodal LLMs."
   },
   {
-    id: "2",
+    id: "fb-2",
     title: "Networking 101",
     speaker: "Community Lead",
     time: "11:30 AM",

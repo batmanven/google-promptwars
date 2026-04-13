@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Home, Camera, Map, Target, Settings } from "lucide-react";
+import { Home, Camera, Map, Target } from "lucide-react";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -20,9 +20,8 @@ export function Navbar() {
         <Link
           key={item.path}
           href={item.path}
-          className={`flex flex-col items-center gap-1 transition-colors ${
-            pathname === item.path ? "text-[#00f2ff]" : "text-gray-500 hover:text-white"
-          }`}
+          className={`flex flex-col items-center gap-1 transition-colors ${pathname === item.path ? "text-[#00f2ff]" : "text-gray-500 hover:text-white"
+            }`}
         >
           {item.icon}
           <span className="text-[10px] uppercase font-bold tracking-tighter">{item.name}</span>
