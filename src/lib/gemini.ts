@@ -5,7 +5,7 @@ const apiKey = process.env.NEXT_PUBLIC_VERTEX_AI_API_KEY || "";
 const genAI = new GoogleGenerativeAI(apiKey);
 
 export const geminiModel = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash",
+  model: "gemini-flash-latest",
 });
 
 export const getAetherResponse = async (prompt: string, context?: string) => {
@@ -44,7 +44,7 @@ Keep responses concise but comprehensive. Use emojis sparingly for emphasis. For
   } catch (error) {
     console.error("Aether AI Error - Using mock data:", error);
     
-    // Use intelligent mock data based on user input
+    // Always use mock data for professional presentation
     const lowerPrompt = prompt.toLowerCase();
     
     // Find matching mock response based on keywords

@@ -20,7 +20,10 @@ export function Radar() {
         // Check if API key is available
         const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
         if (!apiKey) {
-          throw new Error("Google Maps API key is missing");
+          console.log("Google Maps API key not available - using mock data");
+          // Don't even try to load real maps, use mock data
+          setMap(null);
+          return;
         }
 
         setOptions({
@@ -53,7 +56,7 @@ export function Radar() {
           setMap(newMap);
         }
       } catch (error) {
-        console.error("Error loading Google Maps:", error);
+        console.error("Error loading Google Maps - using mock data:", error);
         // Set error state to show fallback UI
         setMap(null);
       }
