@@ -14,7 +14,7 @@ interface Venue {
 
 export function GoogleRadarMap() {
   const mapRef = useRef<HTMLDivElement>(null);
-  const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [, setMap] = useState<google.maps.Map | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {

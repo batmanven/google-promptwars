@@ -9,7 +9,7 @@ describe("Sheets Library Logic", () => {
   it("should successfully parse valid CSV data from Google Sheets", async () => {
     const mockCsv = "Title,Speaker,Time,Room,Description\nKeynote,Speaker One,10:00 AM,Stage 1,Test Description";
     
-    // @ts-ignore
+    // @ts-expect-error - Mocking global fetch for testing
     global.fetch.mockResolvedValueOnce({
       ok: true,
       text: () => Promise.resolve(mockCsv),
@@ -34,7 +34,7 @@ describe("Sheets Library Logic", () => {
   });
 
   it("should handle HTTP errors gracefully and return fallback data", async () => {
-    // @ts-ignore
+    // @ts-expect-error - Mocking global fetch for testing
     global.fetch.mockResolvedValueOnce({
       ok: false,
       status: 404,

@@ -49,7 +49,6 @@ export function Sidebar() {
         onBlur={handleBlur}
         role="navigation"
         aria-label="Main Navigation"
-        aria-expanded={isOpen}
         className={`
           fixed left-0 top-0 h-full z-40 transition-all duration-500 ease-in-out border-r border-[#d4d0c4]
           lg:sticky lg:top-0 lg:h-screen lg:block
