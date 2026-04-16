@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { SystemHUD } from "@/components/dashboard/SystemHUD";
 
 const inter = Inter({
   weight: ["400", "500", "600", "700"],
@@ -31,6 +32,7 @@ export default function RootLayout({
         <AppLayout>
           {children}
         </AppLayout>
+        <SystemHUD />
       </body>
     </html>
   );

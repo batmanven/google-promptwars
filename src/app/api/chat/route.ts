@@ -1,4 +1,4 @@
-import { geminiModel } from "@/lib/gemini";
+import { geminiModel } from "@/lib/gemini-core";
 import { NextRequest } from "next/server";
 
 export const runtime = "edge";

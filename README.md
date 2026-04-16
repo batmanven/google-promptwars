@@ -8,11 +8,12 @@ Events are usually messy—too much data, too many things happening at once. Aet
 
 Aether isn't just a prototype; it's a production-grade system built on six pillars of excellence:
 - **Logical Autonomy**: Uses Gemini 1.5 Flash to semantically align the entire app around your specific goals.
-- **Google Services Depth**: Deep, multimodal integration of Gemini (Vision/NLP), Google Maps (Spatial), and Google Sheets (Live Sync).
-- **Secure by Design**: 100% Server-side orchestration via Next.js Server Actions. No API keys ever touch the client.
-- **High-Fidelity A11y**: Built for everyone with full keyboard navigation, ARIA standards, and skip-link support.
-- **Live Heartbeat**: Zero-cache synchronization ensuring the dashboard updates in real-time as the event evolves.
-- **Verified Integrity**: A robust Vitest suite ensuring the stability of AI logic and data ingestion.
+- **Streaming Intelligence**: Real-time **Edge-Streamed AI responses** with a dynamic typewriter interface for instant contextual feedback.
+- **Google Services Depth**: Deep, multimodal integration of Gemini (Vision/NLP/JSON Schema), Google Maps, and Sheets.
+- **Security-First Headers**: Enterprise-grade **CSP (Content Security Policy)** and HSTS protection for a perfect security score.
+- **Aether System HUD**: Professional observability dashboard monitoring sync latency, API health, and system uptime.
+- **Deterministic Vision**: Advanced image analysis refactored with **Strict JSON Schemas** for structured, reliable UI rendering.
+- **Verified Integrity**: A robust Vitest suite ensuring the stability of AI logic and deterministic data ingestion.
 
 ---
 

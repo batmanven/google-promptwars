@@ -83,9 +83,14 @@ export function GoalSetter() {
       </form>
 
       {response && (
-        <div className="bg-[#f5f4ed] border border-[#d4d0c4] rounded-xl p-6 space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-700">
+        <div 
+          className="bg-[#f5f4ed] border border-[#d4d0c4] rounded-xl p-6 space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-700"
+          role="region"
+          aria-live="polite"
+          aria-label="AI Generated Insights"
+        >
           <div className="flex items-center gap-3">
-            <Sparkles className="w-5 h-5 text-[#c96442]" />
+            <Sparkles className="w-5 h-5 text-[#c96442]" aria-hidden="true" />
             <span className="text-sm font-bold text-[#c96442] uppercase tracking-wider">AI Insight</span>
           </div>
           <div className="prose prose-sm max-w-none text-[#87867f] leading-relaxed [&_h2]:text-[#30302e] [&_h2]:text-lg [&_h2]:font-bold [&_h2]:mb-3 [&_h2]:mt-4 [&_ul]:text-[#87867f] [&_ol]:text-[#87867f] [&_li]:text-[#87867f] [&_li]:mb-1 [&_strong]:text-[#c96442] [&_em]:text-[#c96442]">

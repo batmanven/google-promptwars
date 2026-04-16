@@ -1,5 +1,11 @@
+"use server";
+
 import { getFallbackEventData } from "./fallbacks";
 
+/**
+ * Core event data model used across the Aether platform.
+ * Represents a discrete scheduled session within a physical venue.
+ */
 export interface EventSession {
   id: string;
   title: string;
@@ -9,6 +15,12 @@ export interface EventSession {
   description: string;
 }
 
+/**
+ * High-fidelity Server Action to fetch and synchronize live event data from Google Sheets.
+ * Implements strict security validation and zero-cache bypass to ensure real-time 'Pulse' updates.
+ * 
+ * @returns {Promise<EventSession[]>} - A collection of synchronized event sessions.
+ */
 export const getEventData = async (): Promise<EventSession[]> => {
   const sheetId = process.env.EVENT_DATA_SHEET_ID || process.env.NEXT_PUBLIC_EVENT_DATA_SHEET_ID;
 
@@ -40,6 +52,13 @@ export const getEventData = async (): Promise<EventSession[]> => {
   }
 };
 
+/**
+ * Deterministic CSV Parser with robust error correction and normalization.
+ * Strategically handles malformed time strings and nested CSV quote structures.
+ * 
+ * @param {string} csv - The raw CSV string from the Google Sheets export.
+ * @returns {EventSession[]} - Sanitized and normalized event data.
+ */
 const parseCSV = (csv: string): EventSession[] => {
   if (!csv) return [];
 

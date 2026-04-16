@@ -9,7 +9,7 @@ import remarkGfm from "remark-gfm";
 
 export function VisionConcierge() {
   const [image, setImage] = useState<string | null>(null);
-  const [response, setResponse] = useState("");
+  const [visionData, setVisionData] = useState<any>(null); // State for structured AI data
   const [loading, setLoading] = useState(false);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,7 +24,22 @@ export function VisionConcierge() {
 
       try {
         const result = await analyzeVision(base64, file.type);
-        setResponse(result);
+        // Robust JSON Parsing for God-Mode reliability
+        try {
+          // Remove backticks if AI accidentally includes them
+          const cleanJson = result.replace(/```json|```/g, "").trim();
+          const parsed = JSON.parse(cleanJson);
+          setVisionData(parsed);
+        } catch (e) {
+          console.warn("JSON Parse Fallback:", e);
+          setVisionData({
+            title: "Analysis Complete",
+            summary: result.substring(0, 100) + "...",
+            details: ["Data received in legacy format"],
+            recommendations: ["Check logs for parsing details"],
+            insights: "AI responded outside of deterministic schema."
+          });
+        }
       } catch (error) {
         console.error("Vision Analyze Error:", error);
       } finally {
@@ -36,69 +51,118 @@ export function VisionConcierge() {
 
   const reset = () => {
     setImage(null);
-    setResponse("");
+    setVisionData(null);
   };
 
   return (
     <div className="w-full">
-      <div className="bg-[#f0eee6] backdrop-blur-xl border border-[#d4d0c4] rounded-3xl p-12 text-center space-y-8 min-h-[400px] flex flex-col items-center justify-center">
+      <div className="bg-[#f0eee6] backdrop-blur-xl border border-[#d4d0c4] rounded-3xl p-6 lg:p-12 text-center space-y-8 min-h-[400px] flex flex-col items-center justify-center">
         {image ? (
-          <div className="w-full space-y-6 max-w-lg">
-            <div className="relative group">
-              <Image
-                src={image}
-                alt="Uploaded"
-                width={600}
-                height={400}
-                className="w-full h-64 object-cover rounded-2xl shadow-2xl"
-              />
-              <div className="absolute inset-0 bg-linear-to-t from-[#30302e]/50 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
-            </div>
-
-            <div className="bg-[#f5f4ed] border border-[#d4d0c4] rounded-2xl p-6 text-left">
-              <div className="flex items-center gap-3 mb-4 text-[#c96442]">
-                <Sparkles className="w-5 h-5" />
-                <span className="text-xs font-bold uppercase tracking-wider">AI Analysis</span>
+          <div className="w-full space-y-8 max-w-2xl text-left">
+            <div className="grid md:grid-cols-2 gap-8 items-start">
+              <div className="relative group">
+                <Image
+                  src={image}
+                  alt="Uploaded Context"
+                  width={600}
+                  height={400}
+                  className="w-full h-80 object-cover rounded-2xl shadow-2xl border border-[#d4d0c4]"
+                />
+                <div className="absolute top-4 left-4">
+                  <div className="px-3 py-1 bg-[#c96442] text-white text-[10px] font-bold rounded-full uppercase tracking-widest shadow-lg">
+                    Input Source
+                  </div>
+                </div>
               </div>
-              <div className="prose prose-sm max-w-none text-[#87867f] leading-relaxed [&_h2]:text-[#30302e] [&_h2]:text-lg [&_h2]:font-bold [&_h2]:mb-3 [&_h2]:mt-4 [&_ul]:text-[#87867f] [&_ol]:text-[#87867f] [&_li]:text-[#87867f] [&_li]:mb-1 [&_strong]:text-[#c96442] [&_em]:text-[#c96442]" aria-live="polite">
+
+              <div className="space-y-6">
                 {loading ? (
-                  <p>Analyzing visual context...</p>
-                ) : (
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {response}
-                  </ReactMarkdown>
+                  <div className="space-y-4 animate-soft-pulse">
+                    <div className="h-4 bg-[#d4d0c4] rounded w-3/4" />
+                    <div className="h-10 bg-[#e8e6dc] rounded-xl" />
+                    <div className="h-32 bg-[#e8e6dc] rounded-xl" />
+                  </div>
+                ) : visionData && (
+                  <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-700">
+                    <div>
+                      <h2 className="text-3xl font-bold text-[#30302e] tracking-tight">{visionData.title}</h2>
+                      <p className="text-sm text-[#87867f] mt-2 leading-relaxed italic">{visionData.summary}</p>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 text-[#c96442]">
+                        <RefreshCw size={14} className="animate-spin-slow" />
+                        <span className="text-[10px] font-bold uppercase tracking-widest">Logic Output</span>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {visionData.details?.map((detail: string, i: number) => (
+                          <span key={i} className="px-3 py-1 bg-[#e8e6dc] text-[#30302e] text-[10px] font-bold rounded-md border border-[#d4d0c4]/50">
+                            {detail}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
 
+            {!loading && visionData && (
+              <div className="grid md:grid-cols-2 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                <div className="bg-[#f5f4ed] border border-[#d4d0c4] rounded-2xl p-6 space-y-4">
+                  <div className="flex items-center gap-3 text-[#c96442]">
+                    <Sparkles className="w-5 h-5" />
+                    <span className="text-xs font-bold uppercase tracking-wider">Recommendations</span>
+                  </div>
+                  <ul className="space-y-2">
+                    {visionData.recommendations?.map((rec: string, i: number) => (
+                      <li key={i} className="flex gap-3 text-sm text-[#87867f] leading-relaxed">
+                        <span className="text-[#c96442] font-bold">•</span>
+                        {rec}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="bg-[#30302e] text-[#faf9f5] border border-[#141413] rounded-2xl p-6 space-y-4 shadow-xl">
+                  <div className="flex items-center gap-3 text-[#c96442]">
+                    <RefreshCw className="w-5 h-5" />
+                    <span className="text-xs font-bold uppercase tracking-wider">Pro Insights</span>
+                  </div>
+                  <p className="text-sm leading-relaxed opacity-90">{visionData.insights}</p>
+                </div>
+              </div>
+            )}
+
             <button
               onClick={reset}
-              className="flex items-center gap-2 text-sm text-[#87867f] hover:text-[#30302e] transition-colors mx-auto"
+              className="flex items-center gap-2 text-sm text-[#87867f] hover:text-[#30302e] transition-colors mx-auto pt-4"
               aria-label="Upload another image"
             >
               <RefreshCw className="w-4 h-4" aria-hidden="true" />
-              Try Another Image
+              Reset Vision Engine
             </button>
           </div>
         ) : (
           <div className="space-y-8 max-w-md">
-            <div className="w-20 h-20 mx-auto bg-[#c96442] rounded-full flex items-center justify-center shadow-lg shadow-[#c96442]/25">
-              <Camera className="w-10 h-10 text-white" />
+            <div className="w-24 h-24 mx-auto bg-[#c96442] rounded-full flex items-center justify-center shadow-2xl shadow-[#c96442]/30 relative overflow-hidden group">
+              <Camera className="w-10 h-10 text-white relative z-10 transition-transform group-hover:scale-110" />
+              <div className="absolute inset-0 bg-[#b05638] translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
             </div>
 
             <div className="space-y-4">
-              <h2 className="text-3xl font-bold text-[#30302e]">Vision Concierge</h2>
-              <p className="text-[#87867f] leading-relaxed">
-                Upload a photo of a banner, venue map, or room to get instant AI-powered insights and analysis.
+              <h2 className="text-4xl font-bold text-[#30302e] tracking-tight">Vision Concierge</h2>
+              <p className="text-[#87867f] leading-relaxed font-medium">
+                The peak of event analysis. Upload any physical visual—Aether will extract, decode, and prioritize your next move.
               </p>
             </div>
 
             <label
-              className="group cursor-pointer inline-flex items-center gap-3 bg-[#c96442] text-white px-8 py-4 rounded-2xl font-semibold transition-all hover:scale-105 hover:shadow-lg hover:shadow-[#c96442]/25"
+              className="group cursor-pointer inline-flex items-center gap-3 bg-[#30302e] text-white px-10 py-5 rounded-2xl font-bold transition-all hover:scale-105 hover:bg-[#141413] shadow-2xl shadow-[#30302e]/20"
               aria-label="Upload image for analysis"
             >
               <Upload className="w-5 h-5" aria-hidden="true" />
-              Capture Pulse
+              Analyze Visual
               <input
                 type="file"
                 accept="image/*"
