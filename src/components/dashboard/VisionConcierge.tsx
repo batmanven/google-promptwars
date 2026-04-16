@@ -4,12 +4,18 @@ import { useState } from "react";
 import { analyzeVision } from "@/lib/gemini";
 import { Camera, RefreshCw, Sparkles, Upload } from "lucide-react";
 import Image from "next/image";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+
+interface VisionAnalysis {
+  title: string;
+  summary: string;
+  details: string[];
+  recommendations: string[];
+  insights: string;
+}
 
 export function VisionConcierge() {
   const [image, setImage] = useState<string | null>(null);
-  const [visionData, setVisionData] = useState<any>(null); // State for structured AI data
+  const [visionData, setVisionData] = useState<VisionAnalysis | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -28,7 +28,6 @@ export function GoalSetter() {
       if (!resp.ok) throw new Error("Stream failure");
 
       const reader = resp.body?.getReader();
-      const decoder = new TextEncoder();
       
       if (reader) {
         while (true) {
