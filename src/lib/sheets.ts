@@ -1,4 +1,4 @@
-"use server";
+import { getFallbackEventData } from "./fallbacks";
 
 export interface EventSession {
   id: string;
@@ -14,14 +14,15 @@ export const getEventData = async (): Promise<EventSession[]> => {
 
   if (!sheetId || !/^[a-zA-Z0-9\-_]+$/.test(sheetId)) {
     console.warn("Invalid or missing Event Data Sheet ID. Using fallback data.");
-    return getFallbackData();
+    return getFallbackEventData();
   }
 
   try {
     const url = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
 
     const response = await fetch(url, {
-      next: { revalidate: 3600 },
+      cache: 'no-store',
+      next: { revalidate: 0 },
       headers: {
         'Accept': 'text/csv',
       }
@@ -35,7 +36,7 @@ export const getEventData = async (): Promise<EventSession[]> => {
     return parseCSV(text);
   } catch (error) {
     console.error("Sheets Fetch Error:", error);
-    return getFallbackData();
+    return getFallbackEventData();
   }
 };
 

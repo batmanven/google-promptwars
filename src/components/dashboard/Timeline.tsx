@@ -6,9 +6,26 @@ import { Clock, MapPin, Calendar } from "lucide-react";
 
 export function Timeline() {
   const [sessions, setSessions] = useState<EventSession[]>([]);
+  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const refreshData = async () => {
+    setIsRefreshing(true);
+    try {
+      const data = await getEventData();
+      setSessions(data);
+      setLastUpdated(new Date());
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   useEffect(() => {
-    getEventData().then(setSessions);
+    refreshData();
+    
+    // 100% Peak Persistence: Real-time heartbeat
+    const interval = setInterval(refreshData, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -19,7 +36,13 @@ export function Timeline() {
         </div>
         <div>
           <h2 className="text-2xl font-bold text-[#30302e]">Upcoming Events</h2>
-          <p className="text-sm text-[#87867f]">Scheduled sessions and activities</p>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-sm text-[#87867f]">Scheduled sessions and activities</p>
+            <div className="w-1 h-1 bg-[#d4d0c4] rounded-full"></div>
+            <p className="text-[10px] font-bold text-[#c96442] uppercase tracking-wider">
+              {isRefreshing ? 'Syncing...' : `Last synced: ${lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`}
+            </p>
+          </div>
         </div>
       </div>
 

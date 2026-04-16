@@ -1,7 +1,7 @@
 "use server";
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { mockAIResponses } from "./mock-data";
+import { mockAIResponses, getMockVisionResponse } from "./fallbacks";
 
 const apiKey = process.env.VERTEX_AI_API_KEY || process.env.NEXT_PUBLIC_VERTEX_AI_API_KEY || "";
 const genAI = new GoogleGenerativeAI(apiKey);
@@ -115,31 +115,5 @@ function getMockGoalResponse(prompt: string) {
     }
   }
   return mockAIResponses[0].response;
-}
-
-function getMockVisionResponse() {
-  return `## **What I See**
-- Professional event banner with Google PromptWars 2026 branding
-- High-tech conference venue with modern architecture
-- Multiple session rooms and networking areas visible
-- Digital displays showing real-time event information
-
-## **Event Context**
-- This appears to be the main registration area of Google PromptWars
-- Currently active with attendees checking in and networking
-- Multiple tracks running simultaneously (AI, Cloud, Development)
-- Event staff available for assistance and guidance
-
-## **Recommendations**
-- **Check the digital schedule board** for any last-minute room changes
-- **Connect with event staff** - they have insider information about popular sessions
-- **Visit the Google Cloud booth** for exclusive swag and technical discussions
-- **Join the AI track** - it's the most popular with industry experts present
-
-## **Pro Tips**
-- The Gemini Lounge (2F) has the best networking opportunities
-- Free charging stations available throughout the venue
-- VIP networking session happening at 5:00 PM (ask staff for access)
-- Real-time event updates available through the official mobile app`;
 }
 
