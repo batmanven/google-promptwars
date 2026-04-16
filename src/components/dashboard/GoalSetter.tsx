@@ -33,21 +33,23 @@ export function GoalSetter() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4" aria-label="Goal setting form">
         <div className="relative">
           <input
             type="text"
             value={goal}
             onChange={(e) => setGoal(e.target.value)}
             placeholder="What is your main goal today?"
+            aria-label="Your primary objective"
             className="w-full bg-[#e8e6dc] border border-[#d4d0c4] rounded-xl px-4 py-4 pr-14 focus:outline-none focus:border-[#c96442] focus:ring-2 focus:ring-[#c96442]/20 transition-all placeholder-[#87867f] text-[#30302e]"
           />
           <button
             type="submit"
             disabled={loading}
+            aria-label="Send goal for AI analysis"
             className="absolute cursor-pointer right-2 top-1/2 -translate-y-1/2 p-3 bg-[#c96442] text-white rounded-lg hover:shadow-lg hover:shadow-[#c96442]/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Send size={18} />
+            {loading ? <Sparkles className="w-4 h-4 animate-spin" /> : <Send size={18} />}
           </button>
         </div>
       </form>

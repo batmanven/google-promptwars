@@ -1,11 +1,10 @@
-import { LeafletMap } from "@/components/dashboard/LeafletMap";
+import { GoogleRadarMap } from "@/components/dashboard/GoogleRadarMap";
 import { MapPin, Users, Wifi } from "lucide-react";
 
 export default function RadarPage() {
   return (
     <div className="min-h-screen bg-[#f5f4ed] text-[#30302e]">
       <div className="container mx-auto px-4 py-8 lg:py-16 max-w-6xl">
-        {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <div>
             <h1 className="text-4xl lg:text-6xl font-bold mb-2 text-[#30302e]">
@@ -23,7 +22,7 @@ export default function RadarPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <LeafletMap />
+            <GoogleRadarMap />
           </div>
 
           <div className="space-y-6">

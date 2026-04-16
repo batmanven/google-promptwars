@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Sidebar } from "@/components/layout/Sidebar";
+import { AppLayout } from "@/components/layout/AppLayout";
 
 const inter = Inter({
   weight: ["400", "500", "600", "700"],
@@ -9,8 +9,15 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Google Promptwars",
-  description: "",
+  title: "Aether | Intelligent Event Companion",
+  description: "An autonomous, intent-driven event companion powered by Gemini AI for the Google PromptWars Hackathon 2026.",
+  keywords: ["AI", "Gemini", "Hackathon", "Event Companion", "Google PromptWars"],
+  authors: [{ name: "Priyansh Narang" }],
+  openGraph: {
+    title: "Aether | Intelligent Event Companion",
+    description: "Navigate your event with real-time AI intelligence.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -21,12 +28,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} bg-[#f5f4ed] text-[#30302e]`}>
-        <div className="flex min-h-screen">
-          <Sidebar />
-          <main className="flex-1 lg:ml-0 pt-16 lg:pt-0">
-            {children}
-          </main>
-        </div>
+        <AppLayout>
+          {children}
+        </AppLayout>
       </body>
     </html>
   );

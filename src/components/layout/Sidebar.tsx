@@ -10,7 +10,7 @@ export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
-    { name: "Pulse", path: "/", icon: <Home size={20} />, description: "Dashboard" },
+    { name: "Pulse", path: "/pulse", icon: <Home size={20} />, description: "Dashboard" },
     { name: "Vision", path: "/vision", icon: <Camera size={20} />, description: "AI Analysis" },
     { name: "Radar", path: "/radar", icon: <Map size={20} />, description: "Location" },
     { name: "Goal", path: "/goal", icon: <Target size={20} />, description: "Intent" },
@@ -28,8 +28,8 @@ export function Sidebar() {
       </button>
 
       <aside className={`
-        fixed left-0 top-0 h-full w-full lg:w-80  border-r border-[#d4d0c4] z-40 transition-transform duration-300 ease-in-out
-        lg:translate-x-0 lg:static lg:block
+        fixed left-0 top-0 h-full w-full lg:w-80 border-r border-[#d4d0c4] z-40 transition-transform duration-300 ease-in-out
+        lg:translate-x-0 lg:sticky lg:top-0 lg:h-screen lg:block bg-[#f5f4ed]
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="flex flex-col h-full">
@@ -61,16 +61,16 @@ export function Sidebar() {
                 onClick={() => setIsOpen(false)}
                 className={`
                   flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group
-                  ${pathname === item.path 
-                    ? 'bg-[#c96442]/10 text-[#c96442] border border-[#c96442]/30' 
+                  ${pathname === item.path
+                    ? 'bg-[#c96442]/10 text-[#c96442] border border-[#c96442]/30'
                     : 'text-[#87867f] hover:text-[#30302e] hover:bg-[#f0eee6]/50'
                   }
                 `}
               >
                 <div className={`
                   p-2 rounded-lg transition-colors
-                  ${pathname === item.path 
-                    ? 'bg-[#c96442]/10 text-[#c96442]' 
+                  ${pathname === item.path
+                    ? 'bg-[#c96442]/10 text-[#c96442]'
                     : 'bg-[#f0eee6] group-hover:bg-[#e8e6dc]'
                   }
                 `}>
@@ -84,12 +84,12 @@ export function Sidebar() {
             ))}
           </nav>
 
-      
+
         </div>
       </aside>
 
       {isOpen && (
-        <div 
+        <div
           className="lg:hidden fixed inset-0 bg-black/50 z-30"
           onClick={() => setIsOpen(false)}
         />

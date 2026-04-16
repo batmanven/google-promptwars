@@ -1,16 +1,22 @@
+"use server";
+
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { mockAIResponses } from "./mock-data";
 
-const apiKey = process.env.NEXT_PUBLIC_VERTEX_AI_API_KEY || "";
+const apiKey = process.env.VERTEX_AI_API_KEY || process.env.NEXT_PUBLIC_VERTEX_AI_API_KEY || "";
 const genAI = new GoogleGenerativeAI(apiKey);
 
-export const geminiModel = genAI.getGenerativeModel({
+const geminiModel = genAI.getGenerativeModel({
   model: "gemini-flash-latest",
 });
 
 export const getAetherResponse = async (prompt: string, context?: string) => {
+  if (!apiKey) {
+    console.warn("No API key found. Using mock data.");
+    return getMockGoalResponse(prompt);
+  }
+
   try {
-    // Try real AI first
     const fullPrompt = `You are Aether, an autonomous, intelligent event companion for a high-tech physical event.
 
 Your goal is to help attendees navigate, network, and optimize their experience with structured, actionable insights.
@@ -43,24 +49,23 @@ Keep responses concise but comprehensive. Use emojis sparingly for emphasis. For
     return response.text();
   } catch (error) {
     console.error("Aether AI Error - Using mock data:", error);
-    
-    // Always use mock data for professional presentation
-    const lowerPrompt = prompt.toLowerCase();
-    
-    // Find matching mock response based on keywords
-    for (const mock of mockAIResponses) {
-      if (lowerPrompt.includes(mock.goal)) {
-        return mock.response;
-      }
-    }
-    
-    // Default response if no match
-    return mockAIResponses[0].response;
+    return getMockGoalResponse(prompt);
   }
 };
 
-export const analyzeVision = async (imageBuffer: ArrayBuffer, mimeType: string) => {
+/**
+ * Server Action to analyze images with Gemini Vision
+ */
+export const analyzeVision = async (base64Image: string, mimeType: string) => {
+  if (!apiKey) {
+    console.warn("No API key found. Using mock data.");
+    return getMockVisionResponse();
+  }
+
   try {
+    // Extract base64 data if it includes the prefix
+    const data = base64Image.includes(",") ? base64Image.split(",")[1] : base64Image;
+
     const prompt = `Analyze this image from a physical event (it could be a banner, room, map, or person). 
 
 Provide a structured, professional response using Markdown formatting:
@@ -90,7 +95,7 @@ Keep responses actionable and helpful. Use emojis sparingly for emphasis.`;
     const result = await geminiModel.generateContent([
       {
         inlineData: {
-          data: Buffer.from(imageBuffer).toString("base64"),
+          data,
           mimeType,
         },
       },
@@ -100,9 +105,24 @@ Keep responses actionable and helpful. Use emojis sparingly for emphasis.`;
     return response.text();
   } catch (error) {
     console.error("Aether Vision Error - Using mock data:", error);
-    
-    // Return a sophisticated mock vision analysis
-    return `## **What I See**
+    return getMockVisionResponse();
+  }
+};
+
+// --- Helper functions for mock data ---
+
+function getMockGoalResponse(prompt: string) {
+  const lowerPrompt = prompt.toLowerCase();
+  for (const mock of mockAIResponses) {
+    if (lowerPrompt.includes(mock.goal.toLowerCase())) {
+      return mock.response;
+    }
+  }
+  return mockAIResponses[0].response;
+}
+
+function getMockVisionResponse() {
+  return `## **What I See**
 - Professional event banner with Google PromptWars 2026 branding
 - High-tech conference venue with modern architecture
 - Multiple session rooms and networking areas visible
@@ -124,12 +144,6 @@ Keep responses actionable and helpful. Use emojis sparingly for emphasis.`;
 - The Gemini Lounge (2F) has the best networking opportunities
 - Free charging stations available throughout the venue
 - VIP networking session happening at 5:00 PM (ask staff for access)
-- Real-time event updates available through the official mobile app
+- Real-time event updates available through the official mobile app`;
+}
 
-## **Hidden Opportunities**
-- Google is conducting on-site interviews for engineering positions
-- Free cloud credits ($500) for workshop participants
-- Exclusive research paper access for AI track attendees
-- After-hours networking dinner with industry leaders`;
-  }
-};

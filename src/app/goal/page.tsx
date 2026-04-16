@@ -5,7 +5,7 @@ export default function GoalPage() {
     <main className="min-h-screen">
       <div className="container mx-auto px-4 py-8 lg:py-16 max-w-4xl">
         <div className="space-y-8">
-          {/* Header */}
+
           <div className="text-center space-y-4">
             <h1 className="text-4xl lg:text-6xl font-bold mb-2 text-[#30302e]">
               Intent
@@ -15,10 +15,8 @@ export default function GoalPage() {
             </p>
           </div>
 
-          {/* Goal Setter */}
           <GoalSetter />
 
-          {/* Info Card */}
           <div className="bg-[#f0eee6] border border-[#d4d0c4] rounded-2xl p-8 text-center">
             <div className="max-w-2xl mx-auto space-y-4">
               <div className="w-16 h-16 mx-auto bg-[#c96442] rounded-full flex items-center justify-center">
@@ -26,7 +24,7 @@ export default function GoalPage() {
               </div>
               <h3 className="text-xl font-semibold text-[#30302e]">Smart Adaptation</h3>
               <p className="text-[#87867f] leading-relaxed">
-                Aether will continuously adjust your Pulse and Radar based on your current intent, 
+                Aether will continuously adjust your Pulse and Radar based on your current intent,
                 providing personalized insights and recommendations that align with your goals.
               </p>
               <div className="flex flex-wrap justify-center gap-4 pt-4">

@@ -1,3 +1,5 @@
+"use server";
+
 export interface EventSession {
   id: string;
   title: string;
@@ -8,10 +10,10 @@ export interface EventSession {
 }
 
 export const getEventData = async (): Promise<EventSession[]> => {
-  const sheetId = process.env.NEXT_PUBLIC_EVENT_DATA_SHEET_ID;
+  const sheetId = process.env.EVENT_DATA_SHEET_ID || process.env.NEXT_PUBLIC_EVENT_DATA_SHEET_ID;
 
   if (!sheetId) {
-    console.warn("NEXT_PUBLIC_EVENT_DATA_SHEET_ID is not defined. Using fallback data.");
+    console.warn("Event Data Sheet ID is not defined. Using fallback data.");
     return getFallbackData();
   }
 
