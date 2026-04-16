@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Aether: Intelligent Event Companion
+
+Aether is an autonomous, intent-driven event companion designed to navigate and optimize the high-tech physical event experience. Developed for the Google PromptWars Hackathon 2026, the platform leverages Gemini 1.5 Flash to transform unstructured event data into personalized, actionable intelligence.
+
+## Core Capabilities
+
+### Pulse: Real-time Intelligence
+A centralized dashboard providing live updates on sessions, networking status, and system health. It synchronizes with real-time event data from Google Sheets to ensure attendees are always aligned with the latest scheduling changes.
+
+### Vision: Multimodal Analysis
+Utilizes Gemini 1.5 Flash Vision to analyze physical environment cues. Attendees can capture images of banners, room layouts, or maps to receive instant context, scheduling information, and strategic recommendations.
+
+### Radar: Spatial awareness
+A high-fidelity venue radar integrated with the Google Maps JavaScript API. It provides real-time spatial intelligence, marking key collaboration zones, speaking tracks, and networking lounges with precision.
+
+### Intent: Autonomous Goal Alignment
+An intent-driven engine that adapts the entire user experience based on specific attendee goals. By defining targets—such as specialized networking or technical deep dives—Aether dynamically prioritizes information across all modules.
+
+## Technical Architecture
+
+### Intelligent Server Logic
+Aether utilizes Next.js Server Actions to securely orchestrate Gemini AI calls. By keeping API keys and prompt logic execution on the server-side, the platform ensures a robust security posture while maintaining a highly responsive client experience.
+
+### Design System
+The interface follows a "Claude-inspired" aesthetic:
+- **Parchment Foundation**: A warm, high-legibility background system.
+- **Anthropic Dark Surfaces**: Deep contrast navigation for focus and hierarchy.
+- **Terracotta Accents**: Strategic branding for high-priority interactive elements.
+
+## Technical Stack
+
+- **Framework**: Next.js 15 (App Router, Server Actions)
+- **AI Engine**: Google Generative AI (Gemini 1.5 Flash)
+- **Styling**: Tailwind CSS 4.0
+- **Mapping**: Google Maps JavaScript API
+- **Data Source**: Google Sheets (Real-time CSV Synchronization)
+- **Testing**: Vitest (Unit and AI Logic Validation)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18.17 or later
+- A valid Google AI Studio or Vertex AI API Key
+- A Google Maps Platform API Key
+
+### Configuration
+
+Create a `.env` file in the root directory:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Gemini AI Configuration
+VERTEX_AI_API_KEY=your_gemini_api_key
+
+# Google Maps Configuration
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_maps_key
+
+# Content Management
+NEXT_PUBLIC_EVENT_DATA_SHEET_ID=your_spreadsheet_id
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The application will be accessible at `http://localhost:3000`.
 
-## Learn More
+## Deployment
 
-To learn more about Next.js, take a look at the following resources:
+Aether is containerized for deployment on Google Cloud Run. The provided multi-stage `Dockerfile` optimizes for output tracing and minimal image size, ensuring high performance at scale.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Developed as a submission for the Google PromptWars Hackathon 2026.
