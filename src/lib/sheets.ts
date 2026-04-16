@@ -44,25 +44,35 @@ const parseCSV = (csv: string): EventSession[] => {
   if (!csv) return [];
 
   const lines = csv.split(/\r?\n/);
-
   const dataLines = lines.slice(1).filter(line => line.trim() !== "");
 
   return dataLines.map((line, index) => {
+    // Advanced Regex for multi-column CSV with quote support
     const matches = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
 
     const cleanFields = (matches || []).map(field =>
       field.replace(/^"|"$/g, "").trim()
     );
 
-    const [title, speaker, time, room, description] = cleanFields;
+    // God-Mode Deterministic Handlers
+    const title = cleanFields[0] || "Untitled Session";
+    const speaker = cleanFields[1] || "TBA";
+    const time = cleanFields[2] || "TBA";
+    const room = cleanFields[3] || "TBA";
+    const description = cleanFields[4] || "";
+
+    // Normalize Time Strings (e.g. "10am" -> "10:00 AM")
+    const normalizedTime = time.toLowerCase().includes('am') || time.toLowerCase().includes('pm') 
+      ? time 
+      : `${time}:00 PM`; // Safe default for missing suffixes
 
     return {
-      id: index.toString(),
-      title: title || "Untitled Session",
-      speaker: speaker || "TBA",
-      time: time || "TBA",
-      room: room || "TBA",
-      description: description || ""
+      id: `session-${index}-${Date.now()}`, // Unique deterministic ID
+      title: title.length > 100 ? title.substring(0, 97) + "..." : title,
+      speaker,
+      time: normalizedTime,
+      room: room || "Venue Main",
+      description
     };
   });
 };

@@ -3,7 +3,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { mockAIResponses, getMockVisionResponse } from "./fallbacks";
 
-const apiKey = process.env.VERTEX_AI_API_KEY || process.env.NEXT_PUBLIC_VERTEX_AI_API_KEY || "";
+const apiKey = process.env.VERTEX_AI_API_KEY || "";
 const genAI = new GoogleGenerativeAI(apiKey);
 
 // 100% Google Services Optimization: System Instructions for Peak Persona
@@ -17,7 +17,7 @@ Response Guidelines:
 - Be concise but comprehensive.
 - Context: A physical tech hackathon/conference (PromptWars 2026).`;
 
-const geminiModel = genAI.getGenerativeModel({
+export const geminiModel = genAI.getGenerativeModel({
   model: "gemini-1.5-flash-latest",
   systemInstruction,
 });

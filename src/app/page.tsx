@@ -22,24 +22,26 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      <section className="pt-40 pb-20 px-6">
-        <div className="max-w-4xl mx-auto text-center space-y-8">
+      <section className="pt-40 pb-20 px-6 overflow-hidden">
+        <div className="max-w-4xl mx-auto text-center space-y-12 animate-float">
+          <div className="space-y-6">
+            <h1 className="text-7xl md:text-9xl font-serif font-medium tracking-tighter leading-[0.85] text-[#141413]">
+              The intelligence <br />
+              for the <span className="italic text-[#c96442] font-normal">modern</span> event.
+            </h1>
 
-          <h1 className="text-6xl md:text-8xl font-serif font-medium tracking-tight leading-[0.9] text-[#141413]">
-            Intelligence for the <span className="italic text-[#c96442]">modern</span> event.
-          </h1>
+            <p className="max-w-2xl mx-auto text-xl md:text-2xl text-[#87867f] leading-relaxed font-medium">
+              Aether is an autonomous, intent-driven companion that turns chaotic event data into personalized, actionable intelligence. Built for builders.
+            </p>
+          </div>
 
-          <p className="max-w-2xl mx-auto text-xl text-[#87867f] leading-relaxed">
-            Aether is an autonomous, intent-driven companion that turns chaotic event data into personalized, actionable intelligence. Built for builders.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8">
             <Link
               href="/pulse"
-              className="group w-full sm:w-auto px-8 py-4 bg-[#c96442] text-white rounded-2xl text-lg font-bold hover:bg-[#b05638] transition-all shadow-xl shadow-[#c96442]/20 flex items-center justify-center gap-2"
+              className="group w-full sm:w-auto px-10 py-5 bg-[#c96442] text-white rounded-2xl text-xl font-bold hover:bg-[#b05638] transition-all shadow-2xl shadow-[#c96442]/30 flex items-center justify-center gap-3 active:scale-95"
             >
-              Open Dashboard
-              <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+              Launch Dashboard
+              <ArrowRight className="group-hover:translate-x-2 transition-transform" />
             </Link>
           </div>
         </div>

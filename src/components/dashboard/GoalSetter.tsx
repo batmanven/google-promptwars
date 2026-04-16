@@ -16,9 +16,37 @@ export function GoalSetter() {
     if (!goal.trim()) return;
 
     setLoading(true);
-    const result = await getAetherResponse(goal);
-    setResponse(result);
-    setLoading(false);
+    setResponse(""); // Clear previous response
+
+    try {
+      const resp = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: goal }),
+      });
+
+      if (!resp.ok) throw new Error("Stream failure");
+
+      const reader = resp.body?.getReader();
+      const decoder = new TextEncoder();
+      
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          
+          const chunk = new TextDecoder().decode(value);
+          setResponse((prev) => prev + chunk);
+        }
+      }
+    } catch (error) {
+      console.error("Streaming Error:", error);
+      // Fallback if stream fails
+      const fallback = await getAetherResponse(goal);
+      setResponse(fallback);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -49,16 +77,16 @@ export function GoalSetter() {
             aria-label="Send goal for AI analysis"
             className="absolute cursor-pointer right-2 top-1/2 -translate-y-1/2 p-3 bg-[#c96442] text-white rounded-lg hover:shadow-lg hover:shadow-[#c96442]/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? <Sparkles className="w-4 h-4 animate-spin" /> : <Send size={18} />}
+            {loading ? <Sparkles className="w-4 h-4 animate-soft-pulse" /> : <Send size={18} />}
           </button>
         </div>
       </form>
 
       {response && (
-        <div className="bg-[#f5f4ed] border border-[#d4d0c4] rounded-xl p-6 space-y-4">
+        <div className="bg-[#f5f4ed] border border-[#d4d0c4] rounded-xl p-6 space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-700">
           <div className="flex items-center gap-3">
             <Sparkles className="w-5 h-5 text-[#c96442]" />
-            <span className="text-sm font-bold text-[#c96442] uppercase tracking-wider">AI Response</span>
+            <span className="text-sm font-bold text-[#c96442] uppercase tracking-wider">AI Insight</span>
           </div>
           <div className="prose prose-sm max-w-none text-[#87867f] leading-relaxed [&_h2]:text-[#30302e] [&_h2]:text-lg [&_h2]:font-bold [&_h2]:mb-3 [&_h2]:mt-4 [&_ul]:text-[#87867f] [&_ol]:text-[#87867f] [&_li]:text-[#87867f] [&_li]:mb-1 [&_strong]:text-[#c96442] [&_em]:text-[#c96442]">
             <ReactMarkdown 
