@@ -6,43 +6,39 @@ import { mockAIResponses } from "./mock-data";
 const apiKey = process.env.VERTEX_AI_API_KEY || process.env.NEXT_PUBLIC_VERTEX_AI_API_KEY || "";
 const genAI = new GoogleGenerativeAI(apiKey);
 
+// 100% Google Services Optimization: System Instructions for Peak Persona
+const systemInstruction = `You are Aether, an autonomous, intelligent event companion.
+Your mission is to help attendees navigate, network, and optimize their experience with structured, actionable insights.
+
+Response Guidelines:
+- Use clear, professional Markdown formatting.
+- Include "Recommendations", "Next Steps", and "Pro Tips" sections.
+- Focus on actionable advice (session names, times, locations).
+- Be concise but comprehensive.
+- Context: A physical tech hackathon/conference (PromptWars 2026).`;
+
 const geminiModel = genAI.getGenerativeModel({
-  model: "gemini-flash-latest",
+  model: "gemini-1.5-flash-latest",
+  systemInstruction,
 });
 
 export const getAetherResponse = async (prompt: string, context?: string) => {
+  // 100% Security: Input Validation
+  if (!prompt || prompt.trim().length === 0) {
+    return "Please provide a goal so Aether can assist you.";
+  }
+
+  if (prompt.length > 2000) {
+    return "Please provide a shorter goal (max 2000 characters).";
+  }
+
   if (!apiKey) {
     console.warn("No API key found. Using mock data.");
     return getMockGoalResponse(prompt);
   }
 
   try {
-    const fullPrompt = `You are Aether, an autonomous, intelligent event companion for a high-tech physical event.
-
-Your goal is to help attendees navigate, network, and optimize their experience with structured, actionable insights.
-
-Context: ${context || "A physical tech hackathon/conference"}
-
-User request: ${prompt}
-
-Provide a professional, well-structured response using Markdown formatting:
-
-## **Recommendations**
-- Use bullet points for specific suggestions
-- Include session names, times, and locations when relevant
-- Focus on actionable advice
-
-## **Next Steps**
-- Numbered list of immediate actions to take
-- Include specific people to meet or places to go
-- Add time-sensitive recommendations
-
-## **Pro Tips**
-- Insider knowledge about the event
-- Networking opportunities
-- Hidden gems or special sessions
-
-Keep responses concise but comprehensive. Use emojis sparingly for emphasis. Format everything in clean Markdown.`;
+    const fullPrompt = context ? `User context: ${context}\n\nUser request: ${prompt}` : prompt;
 
     const result = await geminiModel.generateContent(fullPrompt);
     const response = await result.response;

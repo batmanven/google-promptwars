@@ -60,7 +60,7 @@ export function VisionConcierge() {
                 <Sparkles className="w-5 h-5" />
                 <span className="text-xs font-bold uppercase tracking-wider">AI Analysis</span>
               </div>
-              <div className="prose prose-sm max-w-none text-[#87867f] leading-relaxed [&_h2]:text-[#30302e] [&_h2]:text-lg [&_h2]:font-bold [&_h2]:mb-3 [&_h2]:mt-4 [&_ul]:text-[#87867f] [&_ol]:text-[#87867f] [&_li]:text-[#87867f] [&_li]:mb-1 [&_strong]:text-[#c96442] [&_em]:text-[#c96442]">
+              <div className="prose prose-sm max-w-none text-[#87867f] leading-relaxed [&_h2]:text-[#30302e] [&_h2]:text-lg [&_h2]:font-bold [&_h2]:mb-3 [&_h2]:mt-4 [&_ul]:text-[#87867f] [&_ol]:text-[#87867f] [&_li]:text-[#87867f] [&_li]:mb-1 [&_strong]:text-[#c96442] [&_em]:text-[#c96442]" aria-live="polite">
                 {loading ? (
                   <p>Analyzing visual context...</p>
                 ) : (
@@ -74,8 +74,9 @@ export function VisionConcierge() {
             <button
               onClick={reset}
               className="flex items-center gap-2 text-sm text-[#87867f] hover:text-[#30302e] transition-colors mx-auto"
+              aria-label="Upload another image"
             >
-              <RefreshCw className="w-4 h-4" />
+              <RefreshCw className="w-4 h-4" aria-hidden="true" />
               Try Another Image
             </button>
           </div>

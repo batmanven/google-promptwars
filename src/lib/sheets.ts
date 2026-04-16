@@ -12,8 +12,8 @@ export interface EventSession {
 export const getEventData = async (): Promise<EventSession[]> => {
   const sheetId = process.env.EVENT_DATA_SHEET_ID || process.env.NEXT_PUBLIC_EVENT_DATA_SHEET_ID;
 
-  if (!sheetId) {
-    console.warn("Event Data Sheet ID is not defined. Using fallback data.");
+  if (!sheetId || !/^[a-zA-Z0-9\-_]+$/.test(sheetId)) {
+    console.warn("Invalid or missing Event Data Sheet ID. Using fallback data.");
     return getFallbackData();
   }
 
@@ -21,7 +21,10 @@ export const getEventData = async (): Promise<EventSession[]> => {
     const url = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
 
     const response = await fetch(url, {
-      next: { revalidate: 3600 }
+      next: { revalidate: 3600 },
+      headers: {
+        'Accept': 'text/csv',
+      }
     });
 
     if (!response.ok) {

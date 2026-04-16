@@ -10,7 +10,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen">
       {!isLandingPage && <Sidebar />}
-      <main className={`flex-1 ${!isLandingPage ? "" : ""}`}>
+      <main id="main-content" className={`flex-1 ${!isLandingPage ? "" : ""}`}>
         {children}
       </main>
     </div>
