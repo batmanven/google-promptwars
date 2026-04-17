@@ -11,12 +11,8 @@ export async function POST(req: NextRequest) {
       return new Response("Prompt is required", { status: 400 });
     }
 
-    const fullPrompt = context ? `User context: ${context}\n\nUser request: ${prompt}` : prompt;
-
-    // Use generateContentStream for God-Mode real-time feedback
     const result = await geminiModel.generateContentStream(fullPrompt);
 
-    // Create a readable stream for the response
     const stream = new ReadableStream({
       async start(controller) {
         const encoder = new TextEncoder();

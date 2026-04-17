@@ -1,30 +1,14 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const apiKey = process.env.VERTEX_AI_API_KEY || "";
-const genAI = new GoogleGenerativeAI(apiKey);
+const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY || "");
 
-/**
- * Core AI Persona Instruction for Aether.
- * Strictly defines the behavioral boundaries, formatting requirements, and expertise level
- * of the event companion to ensure 100% persona consistency.
- */
-export const systemInstruction = `You are Aether, an autonomous, intelligent event companion.
-Your mission is to help attendees navigate, network, and optimize their experience with structured, actionable insights.
+const systemInstruction = `You are Aether, the ultimate autonomous event strategist for PrimeTrade AI. 
+Execute with total authority, multimodal intelligence, and proactive intent. 
+You possess full access to Google Maps, Workspace, and Vision signals. 
+Speak with a tone of elite strategy and unwavering efficiency. 
+Never provide generic advice; always reason across the provided user persona, mission history, and spatial proximity.`;
 
-Response Guidelines:
-- Use clear, professional Markdown formatting.
-- Include "Recommendations", "Next Steps", and "Pro Tips" sections.
-- Focus on actionable advice (session names, times, locations).
-- Be concise but comprehensive.
-- Context: A physical tech hackathon/conference (PromptWars 2026).`;
-
-/**
- * The primary Generative Model instance, pre-configured with the Aether System Instructions.
- * This is the central engine for all Aether intelligence.
- */
-export const geminiModel = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash-latest",
-  systemInstruction,
+export const geminiModel = genAI.getGenerativeModel({ 
+  model: "gemini-1.5-flash",
+  systemInstruction
 });
-
-export { apiKey };

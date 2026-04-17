@@ -22,8 +22,6 @@ export function Timeline() {
 
   useEffect(() => {
     refreshData();
-    
-    // 100% Peak Persistence: Real-time heartbeat
     const interval = setInterval(refreshData, 60000);
     return () => clearInterval(interval);
   }, []);
@@ -50,7 +48,6 @@ export function Timeline() {
         {sessions.map((session) => (
           <div key={session.id} className="bg-[#f0eee6] backdrop-blur-xl border border-[#d4d0c4] rounded-2xl p-6 hover:border-[#c96442]/30 transition-all duration-300 group">
             <div className="flex gap-6">
-              {/* Time indicator */}
               <div className="flex flex-col items-center">
                 <div className="w-12 h-12 bg-[#c96442] rounded-lg flex items-center justify-center text-white font-bold">
                   {session.time.split(':')[0]}
@@ -58,7 +55,6 @@ export function Timeline() {
                 <div className="text-xs text-[#87867f] mt-1">{session.time.split(':')[1]}</div>
               </div>
               
-              {/* Content */}
               <div className="flex-1 space-y-3">
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
                   <div>

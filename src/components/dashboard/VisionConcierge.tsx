@@ -30,14 +30,11 @@ export function VisionConcierge() {
 
       try {
         const result = await analyzeVision(base64, file.type);
-        // Robust JSON Parsing for God-Mode reliability
         try {
-          // Remove backticks if AI accidentally includes them
           const cleanJson = result.replace(/```json|```/g, "").trim();
           const parsed = JSON.parse(cleanJson);
           setVisionData(parsed);
         } catch (e) {
-          console.warn("JSON Parse Fallback:", e);
           setVisionData({
             title: "Analysis Complete",
             summary: result.substring(0, 100) + "...",
@@ -47,7 +44,6 @@ export function VisionConcierge() {
           });
         }
       } catch (error) {
-        console.error("Vision Analyze Error:", error);
       } finally {
         setLoading(false);
       }
