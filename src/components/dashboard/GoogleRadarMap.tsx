@@ -26,11 +26,8 @@ export function GoogleRadarMap() {
 
     const initMap = async () => {
       try {
-        const { Map, InfoWindow } =
-          (await importLibrary("maps")) as google.maps.MapsLibrary;
-
-        const { Marker } =
-          (await importLibrary("marker")) as google.maps.MarkerLibrary;
+        const { Map, InfoWindow } = (await importLibrary("maps")) as google.maps.MapsLibrary;
+        const { AdvancedMarkerElement, PinElement } = (await importLibrary("marker")) as google.maps.MarkerLibrary;
 
         if (!mapRef.current) return;
 
@@ -38,46 +35,12 @@ export function GoogleRadarMap() {
           center: { lat: 12.9716, lng: 77.5946 },
           zoom: 18,
           disableDefaultUI: true,
+          mapId: "AETHER_RADAR_MAP_ID",
           styles: [
-            {
-              featureType: "all",
-              elementType: "labels.text.fill",
-              stylers: [{ color: "#5e5d59" }],
-            },
-            {
-              featureType: "all",
-              elementType: "labels.text.stroke",
-              stylers: [
-                { visibility: "on" },
-                { color: "#f5f4ed" },
-                { weight: 2 },
-              ],
-            },
-            {
-              featureType: "landscape",
-              elementType: "all",
-              stylers: [{ color: "#f5f4ed" }],
-            },
-            {
-              featureType: "poi",
-              elementType: "all",
-              stylers: [{ visibility: "off" }],
-            },
-            {
-              featureType: "road",
-              elementType: "all",
-              stylers: [{ saturation: -100 }, { lightness: 45 }],
-            },
-            {
-              featureType: "road.highway",
-              elementType: "all",
-              stylers: [{ visibility: "simplified" }],
-            },
-            {
-              featureType: "water",
-              elementType: "all",
-              stylers: [{ color: "#d4d0c4" }, { visibility: "on" }],
-            },
+            { featureType: "all", elementType: "labels.text.fill", stylers: [{ color: "#5e5d59" }] },
+            { featureType: "landscape", elementType: "all", stylers: [{ color: "#f5f4ed" }] },
+            { featureType: "poi", elementType: "all", stylers: [{ visibility: "off" }] },
+            { featureType: "water", elementType: "all", stylers: [{ color: "#d4d0c4" }] }
           ],
         };
 
@@ -85,65 +48,41 @@ export function GoogleRadarMap() {
         setMap(mapInstance);
 
         const venues: Venue[] = [
-          {
-            name: "Gemini Lounge",
-            lat: 12.9716,
-            lng: 77.5946,
-            description: "High networking potential",
-            stats: "2F • 12 people",
-          },
-          {
-            name: "Stage A",
-            lat: 12.9714,
-            lng: 77.5944,
-            description: "Main presentation",
-            stats: "Ground Floor • 45 people",
-          },
-          {
-            name: "Collaboration Zone",
-            lat: 12.9718,
-            lng: 77.5948,
-            description: "Team formation happening",
-            stats: "3F • 8 people",
-          },
+          { name: "Gemini Lounge", lat: 12.9716, lng: 77.5946, description: "High networking potential", stats: "2F • 12 people" },
+          { name: "Stage A", lat: 12.9714, lng: 77.5944, description: "Main presentation", stats: "Ground Floor • 45 people" },
+          { name: "Collaboration Zone", lat: 12.9718, lng: 77.5948, description: "Team formation happening", stats: "3F • 8 people" }
         ];
 
         venues.forEach((venue) => {
-          const marker = new Marker({
+          const pin = new PinElement({
+            background: "#c96442",
+            borderColor: "#ffffff",
+            glyphColor: "#ffffff",
+            scale: 1.2
+          });
+
+          const marker = new AdvancedMarkerElement({
             position: { lat: venue.lat, lng: venue.lng },
             map: mapInstance,
             title: venue.name,
-            icon: {
-              path: google.maps.SymbolPath.CIRCLE,
-              fillColor: "#c96442",
-              fillOpacity: 1,
-              strokeWeight: 2,
-              strokeColor: "#ffffff",
-              scale: 10,
-            },
+            content: pin.element
           });
 
           const infoWindow = new InfoWindow({
             content: `
-          <div style="padding: 12px; font-family: sans-serif; min-width: 150px;">
-            <h4 style="margin: 0 0 4px 0; color: #141413; font-weight: 600;">${venue.name}</h4>
-            <p style="margin: 0 0 4px 0; color: #5e5d59; font-size: 13px;">${venue.description}</p>
-            <span style="color: #c96442; font-size: 11px; font-weight: 700; text-transform: uppercase;">
-              ${venue.stats}
-            </span>
-          </div>
-        `,
+              <div style="padding: 12px; font-family: sans-serif; min-width: 150px; background: #f5f4ed;">
+                <h4 style="margin: 0 0 4px 0; color: #141413; font-weight: 600;">${venue.name}</h4>
+                <p style="margin: 0 0 4px 0; color: #5e5d59; font-size: 13px;">${venue.description}</p>
+                <span style="color: #c96442; font-size: 11px; font-weight: 700; text-transform: uppercase;">${venue.stats}</span>
+              </div>
+            `,
           });
 
           marker.addListener("click", () => {
-            infoWindow.open({
-              anchor: marker,
-              map: mapInstance,
-            });
+            infoWindow.open({ anchor: marker, map: mapInstance });
           });
         });
       } catch (err) {
-        console.error("Google Maps Load Error:", err);
         setError("Please add a valid Google Maps API Key to enable Radar.");
       }
     };
@@ -152,22 +91,13 @@ export function GoogleRadarMap() {
   }, []);
 
   return (
-    <div className="w-full h-[500px] relative rounded-3xl overflow-hidden border border-[#d4d0c4] shadow-2xl shadow-[#30302e]/5">
+    <div className="w-full h-[500px] relative rounded-3xl overflow-hidden border border-[#d4d0c4] shadow-2xl">
       <div ref={mapRef} className="w-full h-full" aria-label="Google Maps Venue Radar" />
-
       {error && (
         <div className="absolute inset-0 bg-[#f5f4ed]/90 backdrop-blur-sm flex items-center justify-center p-8 text-center">
-          <div className="max-w-xs space-y-4">
-            <div className="w-12 h-12 bg-[#c96442]/10 rounded-full flex items-center justify-center mx-auto">
-              <MapPin className="w-6 h-6 text-[#c96442]" />
-            </div>
-            <p className="text-sm text-[#5e5d59] font-medium leading-relaxed">
-              {error}
-            </p>
-          </div>
+          <p className="text-sm text-[#5e5d59] font-medium leading-relaxed">{error}</p>
         </div>
       )}
-
       <div className="absolute bottom-6 left-6 right-6 z-10 hidden sm:flex justify-between items-center bg-[#f0eee6]/90 backdrop-blur-md border border-[#d4d0c4] rounded-2xl p-4">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-[#c96442] rounded-lg flex items-center justify-center shadow-lg shadow-[#c96442]/20">
@@ -179,7 +109,7 @@ export function GoogleRadarMap() {
           </div>
         </div>
         <div className="px-3 py-1 bg-[#c96442]/5 border border-[#c96442]/20 rounded-full">
-          <span className="text-[10px] font-bold text-[#c96442] uppercase tracking-widest">Google Services Enabled</span>
+          <span className="text-[10px] font-bold text-[#c96442] uppercase tracking-widest">Advanced Markers v1 Enabled</span>
         </div>
       </div>
     </div>

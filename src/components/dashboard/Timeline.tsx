@@ -12,7 +12,7 @@ export function Timeline() {
   const refreshData = async () => {
     setIsRefreshing(true);
     try {
-      const data = await getEventData();
+      const data = await getEventData(process.env.NEXT_PUBLIC_EVENT_DATA_SHEET_ID || "");
       setSessions(data);
       setLastUpdated(new Date());
     } finally {
@@ -54,21 +54,21 @@ export function Timeline() {
                 </div>
                 <div className="text-xs text-[#87867f] mt-1">{session.time.split(':')[1]}</div>
               </div>
-              
+
               <div className="flex-1 space-y-3">
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
                   <div>
                     <h3 className="text-xl font-semibold text-[#30302e] group-hover:text-[#c96442] transition-colors">
                       {session.title}
                     </h3>
-                    <p className="text-[#87867f] mt-1">{session.speaker}</p>
+                    <p className="text-[#87867f] mt-1">{session.location}</p>
                   </div>
                   <div className="flex items-center gap-2 px-3 py-1 bg-[#e8e6dc] rounded-full">
                     <MapPin size={12} className="text-[#87867f]" />
-                    <span className="text-xs text-[#87867f] font-medium">{session.room}</span>
+                    <span className="text-xs text-[#87867f] font-medium">{session.location}</span>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-4 pt-2">
                   <div className="flex items-center gap-2 text-xs text-[#c96442]">
                     <Clock size={12} />

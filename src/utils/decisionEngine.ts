@@ -1,3 +1,5 @@
+"use server";
+
 import { getUserPersona, getRecentMissions } from "@/services/firestoreService";
 import { calculateWalkingTime } from "@/services/spatialService";
 import { getDecisionResponse } from "@/services/geminiService";

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://aether-215852042049.us-central1.run.app/sitemap.xml

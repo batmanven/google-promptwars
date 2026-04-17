@@ -1,12 +1,19 @@
-export const fetchEventPulse = async (sheetId: string) => {
+export interface EventSession {
+  id: string;
+  time: string;
+  title: string;
+  location: string;
+}
+
+export const getEventData = async (sheetId: string) => {
   try {
     const url = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
     const resp = await fetch(url);
     if (!resp.ok) throw new Error("Fetch failed");
-    
+
     const text = await resp.text();
     const rows = text.split("\n").map(r => r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
-    
+
     return rows.slice(1).map((row, index) => ({
       id: `session-${index}-${Date.now()}`,
       time: row[0]?.replace(/"/g, "") || "",
