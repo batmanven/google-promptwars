@@ -15,7 +15,7 @@
     "@google-cloud/text-to-speech": "^6.4.0",
     "@google-cloud/translate": "^9.3.0",
     "@google-cloud/vision": "^5.3.5",
-    "@google/generative-ai": "^0.24.1",
+    "@google/genai": "^1.50.1",
     "@googlemaps/js-api-loader": "^2.0.2",
     "@types/dompurify": "^3.0.5",
     "dompurify": "^3.4.0",
