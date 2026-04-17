@@ -2,10 +2,16 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { usePathname } from "next/navigation";
 import { AuthProvider } from "@/hooks/useAuth";
 import { UserProvider } from "@/hooks/useUserContext";
+import { useEffect } from "react";
+import { analytics } from "@/services/firebase";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isLandingPage = pathname === "/";
+
+  useEffect(() => {
+    analytics?.then(a => a && console.log("Pulse Analytics Active"));
+  }, []);
 
   return (
     <AuthProvider>

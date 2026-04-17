@@ -39,9 +39,6 @@ export const getAetherResponse = async (prompt: string, context?: string) => {
   }
 };
 
-/**
- * High-fidelity Server Action for analyzing physical visuals via Gemini Vision.
- * Implements a strict JSON schema requirement to enable deterministic UI rendering.
  * 
  * @param {string} base64Image - The raw base64 data of the captured image.
  * @param {string} mimeType - The image format (e.g., image/jpeg, image/png).
