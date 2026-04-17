@@ -9,8 +9,16 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@google-cloud/logging": "^11.2.1",
+    "@google-cloud/storage": "^7.19.0",
+    "@google-cloud/text-to-speech": "^6.4.0",
+    "@google-cloud/translate": "^9.3.0",
+    "@google-cloud/vision": "^5.3.5",
     "@google/generative-ai": "^0.24.1",
     "@googlemaps/js-api-loader": "^2.0.2",
+    "@types/dompurify": "^3.0.5",
+    "dompurify": "^3.4.0",
+    "firebase": "^12.12.0",
     "lucide-react": "^1.8.0",
     "next": "15.1.0",
     "react": "19.0.0",
