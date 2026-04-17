@@ -1,4 +1,4 @@
-import { initializeApp, getApps, getApp } from "firebase/app";
+import { initializeApp, getApps, getApp, FirebaseApp } from "firebase/app";
 import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "firebase/app-check";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
@@ -15,10 +15,20 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
-const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+const isConfigValid = !!firebaseConfig.apiKey;
+
+let app: FirebaseApp | undefined;
+if (getApps().length > 0) {
+  app = getApp();
+} else if (isConfigValid) {
+  app = initializeApp(firebaseConfig);
+} else {
+  app = initializeApp({ ...firebaseConfig, apiKey: "BUILD_TIME_PLACEHOLDER" });
+}
+
 const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
-if (typeof window !== "undefined" && siteKey) {
+if (typeof window !== "undefined" && siteKey && isConfigValid) {
   initializeAppCheck(app, {
     provider: new ReCaptchaEnterpriseProvider(siteKey),
     isTokenAutoRefreshEnabled: true
