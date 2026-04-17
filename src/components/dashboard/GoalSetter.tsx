@@ -18,6 +18,10 @@ export function GoalSetter() {
     e.preventDefault();
     if (!goal.trim() || !user) return;
 
+    const { verifyRecaptcha } = await import("@/services/recaptchaService");
+    const isHuman = await verifyRecaptcha("submit_goal");
+    if (!isHuman) return;
+
     setLoading(true);
     try {
       const decision = await executeAetherDecision(user.uid, goal, null);

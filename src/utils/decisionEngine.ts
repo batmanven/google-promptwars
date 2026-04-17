@@ -33,5 +33,10 @@ export const executeAetherDecision = async (
     SPATIAL CONTEXT: ${walkingContext}
   `;
 
-  return await getDecisionResponse(strategicContext);
+  const result = await getDecisionResponse(strategicContext);
+  
+  const { logSingularityEvent } = await import("@/services/monitoringService");
+  await logSingularityEvent("INFO", "Aether Strategy Generated", { userId, userGoal });
+
+  return result;
 };

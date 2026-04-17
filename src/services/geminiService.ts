@@ -1,8 +1,9 @@
-import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
-
-const genAI = new GoogleGenerativeAI(process.env.VERTEX_AI_API_KEY as string);
+import { GoogleGenerativeAI } from "@google-generative-ai";
+import { getSecret } from "./secretsService";
 
 export const getDecisionResponse = async (context: string) => {
+  const apiKey = await getSecret("VERTEX_AI_API_KEY");
+  const genAI = new GoogleGenerativeAI(apiKey || "");
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   const generationConfig = {
