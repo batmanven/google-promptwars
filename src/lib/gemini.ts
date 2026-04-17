@@ -39,12 +39,6 @@ export const getAetherResponse = async (prompt: string, context?: string) => {
   }
 };
 
- * 
- * @param {string} base64Image - The raw base64 data of the captured image.
- * @param {string} mimeType - The image format (e.g., image/jpeg, image/png).
- * @returns {Promise<string>} - A JSON-formatted string containing the structured image analysis.
- * @see {@link VisionConcierge} for the frontend handling of this deterministic output.
- */
 export const analyzeVision = async (base64Image: string, mimeType: string) => {
   if (!apiKey) {
     console.warn("No API key found. Using mock data.");
