@@ -13,12 +13,16 @@ export const getEventData = async (sheetId: string) => {
 
     const text = await resp.text();
     const rows = text.split("\n").map(r => r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
+    const headers = rows[0]?.map((cell) => cell.replace(/"/g, "").trim().toLowerCase()) || [];
+    const titleIndex = headers.indexOf("title");
+    const timeIndex = headers.indexOf("time");
+    const locationIndex = headers.indexOf("location");
 
     return rows.slice(1).map((row, index) => ({
       id: `session-${index}-${Date.now()}`,
-      time: row[0]?.replace(/"/g, "") || "",
-      title: row[1]?.replace(/"/g, "") || "Untitled Session",
-      location: row[2]?.replace(/"/g, "") || "Main Hall",
+      title: row[titleIndex >= 0 ? titleIndex : 1]?.replace(/"/g, "") || "Untitled Session",
+      time: row[timeIndex >= 0 ? timeIndex : 0]?.replace(/"/g, "") || "",
+      location: row[locationIndex >= 0 ? locationIndex : 2]?.replace(/"/g, "") || "Main Hall",
     }));
   } catch (err) {
     return [

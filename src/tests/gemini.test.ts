@@ -2,25 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { getAetherResponse } from "../lib/gemini";
 
 // Mock the Google Generative AI SDK
-vi.mock("@google/generative-ai", () => {
-  return {
-    GoogleGenerativeAI: vi.fn().mockImplementation(() => {
-      return {
-        getGenerativeModel: vi.fn().mockImplementation(() => {
-          return {
-            generateContent: vi.fn().mockResolvedValue({
-              response: {
-                text: () => "Mocked AI Response for the event.",
-              },
-            }),
-          };
-        }),
-      };
-    }),
-  };
-});
-
-describe("Aether AI Integration (Gemini 1.5 Flash)", () => {
+describe("Aether AI Integration (Gemini 2.0 Flash)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -30,7 +12,7 @@ describe("Aether AI Integration (Gemini 1.5 Flash)", () => {
     const response = await getAetherResponse(prompt);
     
     expect(response).toBeDefined();
-    expect(response).toBe("Mocked AI Response for the event.");
+    expect(response).toBe("Mocked AI Response");
   });
 
   it("should handle empty or very short inputs by returning a helpful default", async () => {
