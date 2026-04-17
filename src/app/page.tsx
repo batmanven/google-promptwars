@@ -7,7 +7,7 @@ export default function LandingPage() {
       <nav className="fixed top-0 w-full z-50 bg-[#f5f4ed]/80 backdrop-blur-md border-b border-[#d4d0c4]/40">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
-           
+
             <span className="text-xl font-bold tracking-tight">Aether</span>
           </div>
 
@@ -83,7 +83,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-     
+
     </div>
   );
 }
