@@ -1,44 +1,50 @@
 import { initializeApp, getApps, getApp, FirebaseApp } from "firebase/app";
 import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "firebase/app-check";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
+import { getAuth, Auth } from "firebase/auth";
+import { getFirestore, Firestore } from "firebase/firestore";
+import { getStorage, FirebaseStorage } from "firebase/storage";
 import { getAnalytics, isSupported } from "firebase/analytics";
 
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
-};
+let app: FirebaseApp;
+let auth: Auth;
+let db: Firestore;
+let storage: FirebaseStorage;
 
-const isConfigValid = !!firebaseConfig.apiKey;
+export async function initAetherServices(config: any) {
+  if (getApps().length > 0) {
+    app = getApp();
+  } else {
+    app = initializeApp({
+      apiKey: config.apiKey,
+      authDomain: config.authDomain,
+      projectId: config.projectId,
+      storageBucket: config.storageBucket,
+      messagingSenderId: config.messagingSenderId,
+      appId: config.appId,
+      measurementId: config.measurementId
+    });
+  }
 
-let app: FirebaseApp | undefined;
-if (getApps().length > 0) {
-  app = getApp();
-} else if (isConfigValid) {
-  app = initializeApp(firebaseConfig);
-} else {
-  app = initializeApp({ ...firebaseConfig, apiKey: "BUILD_TIME_PLACEHOLDER" });
+  if (typeof window !== "undefined" && config.recaptchaKey) {
+    try {
+      initializeAppCheck(app, {
+        provider: new ReCaptchaEnterpriseProvider(config.recaptchaKey),
+        isTokenAutoRefreshEnabled: true
+      });
+    } catch {
+      // App check already initialized or silent fail
+    }
+  }
+
+  auth = getAuth(app);
+  db = getFirestore(app);
+  storage = getStorage(app);
+
+  if (typeof window !== "undefined") {
+    isSupported().then(yes => yes ? getAnalytics(app) : null);
+  }
+
+  return { app, auth, db, storage };
 }
-
-const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
-
-if (typeof window !== "undefined" && siteKey && isConfigValid) {
-  initializeAppCheck(app, {
-    provider: new ReCaptchaEnterpriseProvider(siteKey),
-    isTokenAutoRefreshEnabled: true
-  });
-}
-
-const auth = getAuth(app);
-const db = getFirestore(app);
-const storage = getStorage(app);
-
-export const analytics = typeof window !== "undefined" ? isSupported().then(yes => yes ? getAnalytics(app) : null) : null;
 
 export { app, auth, db, storage };

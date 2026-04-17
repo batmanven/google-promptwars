@@ -3,17 +3,30 @@
 import { Sidebar } from "@/components/layout/Sidebar";
 import { usePathname } from "next/navigation";
 import { AuthProvider } from "@/hooks/useAuth";
+import { useEffect, useState } from "react";
+import { initAetherServices } from "@/services/firebase";
 import { UserProvider } from "@/hooks/useUserContext";
-import { useEffect } from "react";
-import { analytics } from "@/services/firebase";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
+  const [isInitialized, setIsInitialized] = useState(false);
   const pathname = usePathname();
   const isLandingPage = pathname === "/";
 
   useEffect(() => {
-    analytics?.then(a => a && console.log("Pulse Analytics Active"));
+    async function bootAether() {
+      try {
+        const res = await fetch("/api/config");
+        const config = await res.json();
+        await initAetherServices(config);
+        setIsInitialized(true);
+      } catch (e) {
+        console.error("Singularity Boot Failure:", e);
+      }
+    }
+    bootAether();
   }, []);
+
+  if (!isInitialized) return null;
 
   return (
     <AuthProvider>

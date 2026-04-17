@@ -18,14 +18,17 @@ export function GoogleRadarMap() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setOptions({
-      key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
-      v: "weekly",
-      libraries: ["marker"],
-    });
-
     const initMap = async () => {
       try {
+        const configRes = await fetch("/api/config");
+        const config = await configRes.json();
+        
+        setOptions({
+          key: config.mapsApiKey || "",
+          v: "weekly",
+          libraries: ["marker"],
+        });
+
         const { Map, InfoWindow } = (await importLibrary("maps")) as google.maps.MapsLibrary;
         const { AdvancedMarkerElement, PinElement } = (await importLibrary("marker")) as google.maps.MarkerLibrary;
 
@@ -36,12 +39,6 @@ export function GoogleRadarMap() {
           zoom: 18,
           disableDefaultUI: true,
           mapId: "AETHER_RADAR_MAP_ID",
-          styles: [
-            { featureType: "all", elementType: "labels.text.fill", stylers: [{ color: "#5e5d59" }] },
-            { featureType: "landscape", elementType: "all", stylers: [{ color: "#f5f4ed" }] },
-            { featureType: "poi", elementType: "all", stylers: [{ visibility: "off" }] },
-            { featureType: "water", elementType: "all", stylers: [{ color: "#d4d0c4" }] }
-          ],
         };
 
         const mapInstance = new Map(mapRef.current, mapOptions);
@@ -70,19 +67,20 @@ export function GoogleRadarMap() {
 
           const infoWindow = new InfoWindow({
             content: `
-              <div style="padding: 12px; font-family: sans-serif; min-width: 150px; background: #f5f4ed;">
-                <h4 style="margin: 0 0 4px 0; color: #141413; font-weight: 600;">${venue.name}</h4>
+              <div style="padding: 12px; font-family: sans-serif; min-width: 150px; background: #f5f4ed; color: #141413;">
+                <h4 style="margin: 0 0 4px 0; font-weight: 600;">${venue.name}</h4>
                 <p style="margin: 0 0 4px 0; color: #5e5d59; font-size: 13px;">${venue.description}</p>
                 <span style="color: #c96442; font-size: 11px; font-weight: 700; text-transform: uppercase;">${venue.stats}</span>
               </div>
             `,
           });
 
-          marker.addListener("click", () => {
+          marker.addListener("gmp-click", () => {
             infoWindow.open({ anchor: marker, map: mapInstance });
           });
         });
       } catch (err) {
+        console.error("Radar Error:", err);
         setError("Please add a valid Google Maps API Key to enable Radar.");
       }
     };
