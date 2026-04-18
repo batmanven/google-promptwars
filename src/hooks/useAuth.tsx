@@ -16,24 +16,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = subscribeToAuth((u) => {
-      if (!u) {
-        loginAnonymous().then(anon => {
-          setUser(anon);
+    let unsubscribe: () => void = () => {};
+    
+    // We might need to wait for Firebase to initialize if it hasn't yet
+    const initAuth = () => {
+      unsubscribe = subscribeToAuth((u) => {
+        if (!u) {
+          loginAnonymous().then(anon => {
+            setUser(anon);
+            setLoading(false);
+          });
+        } else {
+          setUser(u);
           setLoading(false);
-        });
-      } else {
-        setUser(u);
-        setLoading(false);
-      }
-    });
+        }
+      });
+    };
+
+    initAuth();
 
     return () => unsubscribe();
   }, []);
 
   return (
     <AuthContext.Provider value={{ user, loading }}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 }

@@ -2,6 +2,7 @@ import { auth } from "./firebase";
 import { signInAnonymously, onAuthStateChanged, User } from "firebase/auth";
 
 export const loginAnonymous = async () => {
+  if (!auth) return null;
   try {
     const result = await signInAnonymously(auth);
     return result.user;
@@ -11,5 +12,9 @@ export const loginAnonymous = async () => {
 };
 
 export const subscribeToAuth = (callback: (user: User | null) => void) => {
+  if (!auth) {
+    callback(null);
+    return () => {};
+  }
   return onAuthStateChanged(auth, callback);
 };

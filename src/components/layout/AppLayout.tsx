@@ -26,8 +26,6 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     bootAether();
   }, []);
 
-  if (!isInitialized) return null;
-
   return (
     <AuthProvider>
       <UserProvider>
@@ -35,7 +33,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-[#c96442] focus:text-white focus:rounded-lg">
             Skip to main content
           </a>
-          {!isLandingPage && <Sidebar />}
+          {!isLandingPage && isInitialized && <Sidebar />}
           <main id="main-content" className="flex-1">
             {children}
           </main>
