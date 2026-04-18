@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { analyzeVision } from "@/lib/gemini";
 import { Camera, RefreshCw, Sparkles, Upload } from "lucide-react";
 import Image from "next/image";
+import { useUserContext } from "@/hooks/useUserContext";
 
 interface VisionAnalysis {
   title: string;
@@ -17,6 +18,7 @@ export function VisionConcierge() {
   const [image, setImage] = useState<string | null>(null);
   const [visionData, setVisionData] = useState<VisionAnalysis | null>(null);
   const [loading, setLoading] = useState(false);
+  const context = useUserContext();
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -34,14 +36,17 @@ export function VisionConcierge() {
           const cleanJson = result.replace(/```json|```/g, "").trim();
           const parsed = JSON.parse(cleanJson);
           setVisionData(parsed);
+          context?.setVisionContext(parsed);
         } catch (e) {
-          setVisionData({
+          const fallback = {
             title: "Analysis Complete",
             summary: result.substring(0, 100) + "...",
             details: ["Data received in legacy format"],
             recommendations: ["Check logs for parsing details"],
             insights: "AI responded outside of deterministic schema."
-          });
+          };
+          setVisionData(fallback);
+          context?.setVisionContext(fallback);
         }
       } catch (error) {
       } finally {
@@ -51,10 +56,13 @@ export function VisionConcierge() {
     reader.readAsDataURL(file);
   };
 
-  const reset = () => {
+  const reset = useCallback(() => {
     setImage(null);
     setVisionData(null);
-  };
+  }, []);
+
+  const memoizedDetails = useMemo(() => visionData?.details || [], [visionData]);
+  const memoizedRecs = useMemo(() => visionData?.recommendations || [], [visionData]);
 
   return (
     <div className="w-full">
@@ -96,9 +104,9 @@ export function VisionConcierge() {
                         <RefreshCw size={14} className="animate-spin-slow" />
                         <span className="text-[10px] font-bold uppercase tracking-widest">Logic Output</span>
                       </div>
-                      <div className="flex flex-wrap gap-2">
-                        {visionData.details?.map((detail: string, i: number) => (
-                          <span key={i} className="px-3 py-1 bg-[#e8e6dc] text-[#30302e] text-[10px] font-bold rounded-md border border-[#d4d0c4]/50">
+                      <div className="flex flex-wrap gap-2" role="list">
+                        {memoizedDetails.map((detail: string, i: number) => (
+                          <span key={i} role="listitem" className="px-3 py-1 bg-[#e8e6dc] text-[#30302e] text-[10px] font-bold rounded-md border border-[#d4d0c4]/50">
                             {detail}
                           </span>
                         ))}
@@ -138,8 +146,8 @@ export function VisionConcierge() {
 
             <button
               onClick={reset}
-              className="flex items-center gap-2 text-sm text-[#87867f] hover:text-[#30302e] transition-colors mx-auto pt-4"
-              aria-label="Upload another image"
+              className="flex items-center gap-2 text-sm text-[#87867f] hover:text-[#30302e] transition-colors mx-auto pt-4 focus:ring-2 focus:ring-[#c96442] focus:ring-offset-2 rounded-lg"
+              aria-label="Reset vision engine and upload new image"
             >
               <RefreshCw className="w-4 h-4" aria-hidden="true" />
               Reset Vision Engine
@@ -160,19 +168,22 @@ export function VisionConcierge() {
             </div>
 
             <label
-              className="group cursor-pointer inline-flex items-center gap-3 bg-[#30302e] text-white px-10 py-5 rounded-2xl font-bold transition-all hover:scale-105 hover:bg-[#141413] shadow-2xl shadow-[#30302e]/20"
-              aria-label="Upload image for analysis"
+              htmlFor="vision-upload"
+              className="group cursor-pointer inline-flex items-center gap-3 bg-[#30302e] text-white px-10 py-5 rounded-2xl font-bold transition-all hover:scale-105 hover:bg-[#141413] shadow-2xl shadow-[#30302e]/20 focus-within:ring-4 focus-within:ring-[#c96442]/30"
             >
               <Upload className="w-5 h-5" aria-hidden="true" />
               Analyze Visual
               <input
+                id="vision-upload"
                 type="file"
                 accept="image/*"
-                className="hidden"
+                className="sr-only"
                 onChange={handleUpload}
-                aria-label="Upload photo"
               />
             </label>
+            <div className="sr-only" aria-live="polite">
+              {loading ? "Analyzing visual data, please wait..." : visionData ? "Analysis complete." : ""}
+            </div>
           </div>
         )}
       </div>

@@ -1,9 +1,15 @@
+/**
+ * Gemini AI Core Service
+ * 
+ * Handles interaction with Google's Gemini-2.0-Flash model.
+ * Marked with "use server" to ensure API keys remain on the backend.
+ */
 "use server";
 
 import { getAIClient, systemInstruction } from "./gemini-core";
 import { mockAIResponses, getMockVisionResponse } from "./fallbacks";
 
-const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+const apiKey = process.env.GEMINI_API_KEY;
 
 export async function getAetherResponse(prompt: string, context?: string) {
   const trimmedPrompt = prompt.trim();
@@ -17,6 +23,9 @@ export async function getAetherResponse(prompt: string, context?: string) {
   if (!apiKey) return mockAIResponses[Math.floor(Math.random() * mockAIResponses.length)];
   
   const ai = getAIClient(apiKey);
+  /**
+   * Generates a strategic response from Aether based on prompt and optional context.
+   */
   try {
     const fullPrompt = context ? `Context: ${context}\n\nGoal: ${trimmedPrompt}` : trimmedPrompt;
     const response = await ai.models.generateContent({
@@ -32,6 +41,10 @@ export async function getAetherResponse(prompt: string, context?: string) {
   }
 }
 
+/**
+ * Performs multimodal vision analysis on event visuals.
+ * Returns structured JSON for the Vision Concierge.
+ */
 export const analyzeVision = async (base64Image: string, mimeType: string) => {
   if (!apiKey) return getMockVisionResponse();
   

@@ -7,8 +7,12 @@ import { getUserPersona, saveUserPersona, getRecentMissions, saveMissionRecord }
 interface UserContextType {
   persona: any;
   missions: any[];
+  visionContext: any | null;
+  spatialStatus: any | null;
   updatePersona: (p: any) => Promise<void>;
   addMission: (m: any) => Promise<void>;
+  setVisionContext: (v: any) => void;
+  setSpatialStatus: (s: any) => void;
   refresh: () => Promise<void>;
 }
 
@@ -18,6 +22,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
   const [persona, setPersona] = useState<any>(null);
   const [missions, setMissions] = useState<any[]>([]);
+  const [visionContext, setVisionContext] = useState<any | null>(null);
+  const [spatialStatus, setSpatialStatus] = useState<any | null>(null);
 
   const refresh = useCallback(async () => {
     if (!user) return;
@@ -48,7 +54,17 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <UserContext.Provider value={{ persona, missions, updatePersona, addMission, refresh }}>
+    <UserContext.Provider value={{ 
+      persona, 
+      missions, 
+      visionContext, 
+      spatialStatus, 
+      updatePersona, 
+      addMission, 
+      setVisionContext, 
+      setSpatialStatus, 
+      refresh 
+    }}>
       {children}
     </UserContext.Provider>
   );

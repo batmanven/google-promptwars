@@ -24,7 +24,12 @@ export function GoalSetter() {
 
     setLoading(true);
     try {
-      const decision = await executeAetherDecision(user.uid, goal, null);
+      const decision = await executeAetherDecision(
+        user.uid, 
+        goal, 
+        null, 
+        context?.visionContext
+      );
       setStrategy(decision);
       if (context) {
         await context.addMission({ goal, strategy: decision });
@@ -55,11 +60,13 @@ export function GoalSetter() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="relative">
           <input
+            id="goal-input"
             type="text"
             value={goal}
             onChange={(e) => setGoal(e.target.value)}
             placeholder="Deploy strategic intent..."
             className="w-full bg-[#e8e6dc] border border-[#d4d0c4] rounded-xl px-4 py-4 pr-14 focus:outline-none focus:border-[#c96442] focus:ring-2 focus:ring-[#c96442]/20 transition-all text-[#30302e]"
+            aria-label="Strategic intent input"
           />
           <button
             type="submit"
