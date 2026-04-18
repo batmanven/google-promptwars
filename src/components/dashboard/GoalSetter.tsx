@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useUserContext } from "@/hooks/useUserContext";
 import { executeAetherDecision } from "@/utils/decisionEngine";
 import { createCalendarEvent } from "@/services/workspaceService";
+import { getAudioBriefingAction } from "@/utils/aiActions";
 
 export function GoalSetter() {
   const { user } = useAuth();
@@ -24,6 +25,9 @@ export function GoalSetter() {
 
     setLoading(true);
     try {
+      const { logSingularityEvent } = await import("@/services/monitoringService");
+      await logSingularityEvent("INFO", "Decision Engine Triggered", { userId: user.uid });
+
       const decision = await executeAetherDecision(
         user.uid, 
         goal, 
@@ -45,6 +49,22 @@ export function GoalSetter() {
     }
   };
 
+  const handleAudioBriefing = async () => {
+    if (!strategy?.recommendation) return;
+    setLoading(true);
+    try {
+      const audioBase64 = await getAudioBriefingAction(strategy.recommendation);
+      if (audioBase64) {
+        const audio = new Audio(`data:audio/mp3;base64,${audioBase64}`);
+        await audio.play();
+      }
+    } catch (err) {
+      console.error("Audio failure:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="bg-[#f0eee6] backdrop-blur-xl border border-[#d4d0c4] rounded-2xl p-6 lg:p-8 space-y-6">
       <div className="flex items-center gap-4">
@@ -53,7 +73,15 @@ export function GoalSetter() {
         </div>
         <div>
           <h2 className="text-xl font-bold text-[#30302e]">Strategic Intent</h2>
-          <p className="text-sm text-[#87867f]">Aether Prime Context Engine</p>
+          <div className="flex items-center gap-2">
+            <p className="text-sm text-[#87867f]">Aether Prime Context Engine</p>
+            {context?.visionContext && (
+              <span className="flex items-center gap-1.5 px-2 py-0.5 bg-[#c96442]/10 border border-[#c96442]/30 rounded-full text-[9px] font-bold text-[#c96442] animate-pulse">
+                <Sparkles size={10} />
+                FUSION ACTIVE
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
@@ -112,7 +140,12 @@ export function GoalSetter() {
                 Sync to Calendar
               </a>
             )}
-            <button className="flex items-center gap-2 px-4 py-2 bg-white border border-[#d4d0c4] rounded-lg text-xs font-bold text-[#30302e] hover:bg-[#e8e6dc] transition-all">
+            <button 
+              onClick={handleAudioBriefing}
+              disabled={loading}
+              className="flex items-center gap-2 px-4 py-2 bg-white border border-[#d4d0c4] rounded-lg text-xs font-bold text-[#30302e] hover:bg-[#e8e6dc] transition-all disabled:opacity-50"
+              aria-label="Play audio briefing"
+            >
               <Volume2 className="w-3.5 h-3.5" />
               Audio Briefing
             </button>

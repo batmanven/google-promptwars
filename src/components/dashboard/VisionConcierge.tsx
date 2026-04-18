@@ -5,6 +5,8 @@ import { analyzeVision } from "@/lib/gemini";
 import { Camera, RefreshCw, Sparkles, Upload } from "lucide-react";
 import Image from "next/image";
 import { useUserContext } from "@/hooks/useUserContext";
+import { translateAction } from "@/utils/aiActions";
+import { Globe } from "lucide-react";
 
 interface VisionAnalysis {
   title: string;
@@ -18,6 +20,7 @@ export function VisionConcierge() {
   const [image, setImage] = useState<string | null>(null);
   const [visionData, setVisionData] = useState<VisionAnalysis | null>(null);
   const [loading, setLoading] = useState(false);
+  const [translating, setTranslating] = useState(false);
   const context = useUserContext();
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,6 +35,9 @@ export function VisionConcierge() {
 
       try {
         const result = await analyzeVision(base64, file.type);
+        const { logSingularityEvent } = await import("@/services/monitoringService");
+        await logSingularityEvent("INFO", "Vision Signal Processed", { userId: context?.persona?.id });
+        
         try {
           const cleanJson = result.replace(/```json|```/g, "").trim();
           const parsed = JSON.parse(cleanJson);
@@ -60,6 +66,19 @@ export function VisionConcierge() {
     setImage(null);
     setVisionData(null);
   }, []);
+
+  const handleTranslate = async (lang: string) => {
+    if (!visionData?.insights) return;
+    setTranslating(true);
+    try {
+      const translated = await translateAction(visionData.insights, lang);
+      setVisionData(prev => prev ? { ...prev, insights: translated } : null);
+    } catch (err) {
+      console.error("Translation failed:", err);
+    } finally {
+      setTranslating(false);
+    }
+  };
 
   const memoizedDetails = useMemo(() => visionData?.details || [], [visionData]);
   const memoizedRecs = useMemo(() => visionData?.recommendations || [], [visionData]);
@@ -135,9 +154,23 @@ export function VisionConcierge() {
                 </div>
 
                 <div className="bg-[#30302e] text-[#faf9f5] border border-[#141413] rounded-2xl p-6 space-y-4 shadow-xl">
-                  <div className="flex items-center gap-3 text-[#c96442]">
-                    <RefreshCw className="w-5 h-5" />
-                    <span className="text-xs font-bold uppercase tracking-wider">Pro Insights</span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3 text-[#c96442]">
+                      <RefreshCw className={`w-5 h-5 ${translating ? 'animate-spin' : ''}`} />
+                      <span className="text-xs font-bold uppercase tracking-wider">Pro Insights</span>
+                    </div>
+                    <div className="flex gap-2">
+                      {["es", "hi", "ja"].map((lang) => (
+                        <button
+                          key={lang}
+                          onClick={() => handleTranslate(lang)}
+                          disabled={translating}
+                          className="text-[10px] font-bold text-[#faf9f5]/60 hover:text-[#faf9f5] uppercase transition-colors"
+                        >
+                          {lang}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                   <p className="text-sm leading-relaxed opacity-90">{visionData.insights}</p>
                 </div>
