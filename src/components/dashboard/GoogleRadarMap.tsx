@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { setOptions, importLibrary } from "@googlemaps/js-api-loader";
 import { MapPin } from "lucide-react";
+import { reportAetherError } from "@/services/monitoringService";
 
 interface Venue {
   name: string;
@@ -79,8 +80,8 @@ export function GoogleRadarMap() {
             infoWindow.open({ anchor: marker, map: mapInstance });
           });
         });
-      } catch (err) {
-        console.error("Radar Error:", err);
+      } catch (err: any) {
+        await reportAetherError("Radar Initialization Failure", err);
         setError("Please add a valid Google Maps API Key to enable Radar.");
       }
     };

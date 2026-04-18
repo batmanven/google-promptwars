@@ -73,8 +73,9 @@ export function VisionConcierge() {
     try {
       const translated = await translateAction(visionData.insights, lang);
       setVisionData(prev => prev ? { ...prev, insights: translated } : null);
-    } catch (err) {
-      console.error("Translation failed:", err);
+    } catch (err: any) {
+      const { reportAetherError } = await import("@/services/monitoringService");
+      await reportAetherError("Translation Engine Failure", err);
     } finally {
       setTranslating(false);
     }

@@ -19,8 +19,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         const config = await res.json();
         await initAetherServices(config);
         setIsInitialized(true);
-      } catch (e) {
-        console.error("Singularity Boot Failure:", e);
+      } catch (e: any) {
+        const { reportAetherError } = await import("@/services/monitoringService");
+        await reportAetherError("Application Boot Failure", e);
+        setIsInitialized(true);
       }
     }
     bootAether();

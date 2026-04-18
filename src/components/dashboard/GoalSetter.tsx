@@ -58,8 +58,9 @@ export function GoalSetter() {
         const audio = new Audio(`data:audio/mp3;base64,${audioBase64}`);
         await audio.play();
       }
-    } catch (err) {
-      console.error("Audio failure:", err);
+    } catch (err: any) {
+      const { reportAetherError } = await import("@/services/monitoringService");
+      await reportAetherError("Audio Briefing Engine Failure", err);
     } finally {
       setLoading(false);
     }
